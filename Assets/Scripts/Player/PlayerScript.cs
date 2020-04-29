@@ -11,6 +11,10 @@ public class PlayerScript : MonoBehaviour
 
 	[Space(10)]
 
+	public int direction = 1;
+
+	[Space(10)]
+
 	public bool isJumping;
 
 	[Header("GameObjects")]
@@ -20,8 +24,9 @@ public class PlayerScript : MonoBehaviour
 	private Animator animator;
 
 	[Header("Input")]
-	private bool vActive = false;
-	private bool hActive = false;
+	public bool buttonPressed;
+	public bool buttonDown;
+	public bool buttonReleased;
 
 	void Start()
 	{
@@ -36,8 +41,18 @@ public class PlayerScript : MonoBehaviour
 		// Handle Input
 		HandleInput();
 
+		// Jumping
+		if (isJumping) {
+			// Move
+			transform.Translate(model.transform.forward * 6 * Time.deltaTime);
+		} else {
+			// Look
+			model.transform.rotation = Quaternion.Euler(0, 90 * direction, 0);
+		}
+
 		// Update Animation
-		animator.SetBool("isJumping", isJumping);
+		animator.SetBool("buttonDown", buttonDown);
+		animator.SetBool("buttonReleased", buttonReleased);
 	}
 
 	void SpawnCharacter()
@@ -48,75 +63,28 @@ public class PlayerScript : MonoBehaviour
 		GameObject character = Instantiate(models[rand], transform.position, Quaternion.identity);
 		character.transform.SetParent(model.transform);
 
-		character.transform.localRotation = Quaternion.Euler(0, 0, 0);
+		character.transform.localRotation = Quaternion.Euler(0, 90, 0);
 	}
 
-	void HandleInput()
-	{
-		// Handle Input
-		float vInput = Input.GetAxisRaw("Vertical");
-		float hInput = Input.GetAxisRaw("Horizontal");
-
-		// Vertical Pressed
-		if (vInput != 0 && !vActive)
-		{
-			anyPressed(vInput);
-			vPressed(vInput);
-
-			vActive = true;
-		}
-		if (vInput == 0 && vActive)
-		{
-			anyReleased();
-			vReleased();
-
-			vActive = false;
-		}
-
-		// Horizontal Pressed
-		if (hInput != 0 && !hActive)
-		{
-			anyPressed(hInput);
-			hPressed(hInput);
-
-			hActive = true;
-		}
-		if (hInput == 0 && hActive)
-		{
-			anyReleased();
-			hReleased();
-
-			hActive = false;
+	void HandleInput() {
+		// Input Bools
+		buttonPressed = Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D);
+		buttonDown = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D);
+		buttonReleased = Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D);
+		
+		// Update Look Direction
+		if (Input.GetKeyDown(KeyCode.W)) {
+			direction = 0;
+		} else if (Input.GetKeyDown(KeyCode.A)) {
+			direction = 3;
+		} else if (Input.GetKeyDown(KeyCode.S)) {
+			direction = 2;
+		} else if (Input.GetKeyDown(KeyCode.D)) {
+			direction = 1;
 		}
 	}
 
-	void anyPressed(float input)
-	{
-		isJumping = true;
-	}
-
-	void anyReleased()
-	{
-		isJumping = false;
-	}
-
-	void vPressed(float input)
-	{
-
-	}
-
-	void vReleased()
-	{
-
-	}
-
-	void hPressed(float input)
-	{
-
-	}
-
-	void hReleased()
-	{
-
+	public void JumpComplete() {
+		transform.position = new Vector3((float)Math.Round(transform.position.x), 1, (float)Math.Round(transform.position.z));
 	}
 }
