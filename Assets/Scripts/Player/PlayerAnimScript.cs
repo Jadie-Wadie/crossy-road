@@ -6,20 +6,18 @@ public class PlayerAnimScript : StateMachineBehaviour
 {
 	private PlayerScript playerScript;
 
-	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) 
-	{
-		if (playerScript == null) playerScript = animator.GetComponent<PlayerScript>();
-
+	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 		if (stateInfo.IsName("Jump")) {
-			playerScript.isJumping = true;
+			animator.GetComponent<PlayerScript>().jumpSpeed = stateInfo.length;
 		}
-    }
+	}
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) 
 	{
 		if (stateInfo.IsName("Jump")) {
-			playerScript.isJumping = false;
-			playerScript.JumpComplete();
+			Debug.Log("Over 1");
+			animator.GetComponent<PlayerScript>().JumpOver();
+			Debug.Log("Over 2");
 		}
     }
 }

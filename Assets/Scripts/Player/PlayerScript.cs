@@ -4,6 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+public enum PlayerState {
+	Idle,
+	Crouch,
+	Jump
+}
+
+public enum KeyState {
+	None,
+	Down,
+	Held,
+	Up
+}
+
 public class PlayerScript : MonoBehaviour
 {
 	[Header("Control")]
@@ -11,23 +24,24 @@ public class PlayerScript : MonoBehaviour
 
 	[Space(10)]
 
-	public int direction = 1;
+	public PlayerState state = PlayerState.Idle;
 
 	[Space(10)]
 
-	public bool isJumping;
+	public bool isJumping = false;
+	public bool repeatJump = false;
 
+	[Space(10)]
+
+	public int direction = 0;
+	
 	[Header("GameObjects")]
 	public GameObject[] models;
 
 	[Header("Animation")]
+	public float jumpSpeed;
 	private Animator animator;
-
-	[Header("Input")]
-	public bool buttonPressed;
-	public bool buttonDown;
-	public bool buttonReleased;
-
+	
 	void Start()
 	{
 		model = transform.Find("Model").gameObject;
@@ -38,21 +52,103 @@ public class PlayerScript : MonoBehaviour
 
 	void Update()
 	{
-		// Handle Input
-		HandleInput();
+		Debug.Log(state);
 
-		// Jumping
-		if (isJumping) {
-			// Move
-			transform.Translate(model.transform.forward * 6 * Time.deltaTime);
-		} else {
-			// Look
-			model.transform.rotation = Quaternion.Euler(0, 90 * direction, 0);
+		// Handle State
+		switch (state) {
+			case PlayerState.Idle:
+				// Update Animator
+				animator.SetBool("isCrouching", false);
+				animator.SetBool("repeatJump", false);
+
+				// Check for Crouch
+				if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) {
+					state = PlayerState.Crouch;
+				}
+
+				// Look
+				model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
+				break;
+			case PlayerState.Crouch:
+				// Update Animator
+				animator.SetBool("isCrouching", true);
+				animator.SetBool("repeatJump", false);
+
+				// Check for Jump
+				if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D)) {
+					if (!(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))) {
+						state = PlayerState.Jump;
+					}
+				}
+
+				// Look
+				model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
+				break;
+			case PlayerState.Jump:
+				// Update Animator
+				animator.SetBool("isCrouching", false);
+
+				// Jumping
+				if (isJumping) {
+					// Move
+					transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
+
+					// Check for Chaining
+					if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D)) {
+						repeatJump = true;
+						animator.SetBool("repeatJump", true);
+					}
+
+					// Check for Crouch
+					animator.SetBool("isCrouching", Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D));
+				} else {
+					isJumping = true;
+				}
+				break;
 		}
 
-		// Update Animation
-		animator.SetBool("buttonDown", buttonDown);
-		animator.SetBool("buttonReleased", buttonReleased);
+		// Handle Looking
+		if (Input.GetKeyDown(KeyCode.W)) {
+			direction = 0;
+		}
+
+		if (Input.GetKey(KeyCode.A) ) {
+			direction = 3;
+		}
+
+		if (Input.GetKey(KeyCode.S)) {
+			direction = 2;
+		}
+
+		if (Input.GetKey(KeyCode.D)) {
+			direction = 1;
+		}
+	}
+
+	public void JumpOver() {
+		// Round
+		transform.position = new Vector3((float)Math.Round(transform.position.x), 1, (float)Math.Round(transform.position.z));
+
+		// Look
+		model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
+
+		// Repeat Jump
+		if (repeatJump) {
+			repeatJump = false;
+			animator.SetBool("repeatJump", false);
+		} else {
+			// Stop Jumping
+			isJumping = false;
+
+			// Check for Crouch
+			if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) {
+				if (animator.GetBool("isCrouching")) {
+					state = PlayerState.Crouch;
+				}
+			} else {
+				state = PlayerState.Idle;
+			}
+		}
 	}
 
 	void SpawnCharacter()
@@ -64,27 +160,5 @@ public class PlayerScript : MonoBehaviour
 		character.transform.SetParent(model.transform);
 
 		character.transform.localRotation = Quaternion.Euler(0, 90, 0);
-	}
-
-	void HandleInput() {
-		// Input Bools
-		buttonPressed = Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D);
-		buttonDown = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D);
-		buttonReleased = Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D);
-		
-		// Update Look Direction
-		if (Input.GetKeyDown(KeyCode.W)) {
-			direction = 0;
-		} else if (Input.GetKeyDown(KeyCode.A)) {
-			direction = 3;
-		} else if (Input.GetKeyDown(KeyCode.S)) {
-			direction = 2;
-		} else if (Input.GetKeyDown(KeyCode.D)) {
-			direction = 1;
-		}
-	}
-
-	public void JumpComplete() {
-		transform.position = new Vector3((float)Math.Round(transform.position.x), 1, (float)Math.Round(transform.position.z));
 	}
 }

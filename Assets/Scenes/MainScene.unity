@@ -195,7 +195,7 @@ Animator:
   m_GameObject: {fileID: 379623464}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 691428e024f5d6848a0fbdd273328b92, type: 2}
+  m_Controller: {fileID: 9100000, guid: 3496bdda5ee33de43bee77d9ceb0eaec, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -217,13 +217,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   model: {fileID: 0}
-  direction: 0
+  state: 0
   isJumping: 0
+  repeatJump: 0
+  direction: 0
   models:
   - {fileID: 560467690882499237, guid: e93da06ad7960aa42b4010a16868590c, type: 3}
-  buttonPressed: 0
-  buttonDown: 0
-  buttonReleased: 0
+  jumpSpeed: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
