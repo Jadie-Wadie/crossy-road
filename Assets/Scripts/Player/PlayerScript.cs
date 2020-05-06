@@ -10,13 +10,6 @@ public enum PlayerState {
 	Jump
 }
 
-public enum KeyState {
-	None,
-	Down,
-	Held,
-	Up
-}
-
 public class PlayerScript : MonoBehaviour
 {
 	[Header("Control")]
@@ -25,10 +18,6 @@ public class PlayerScript : MonoBehaviour
 	[Space(10)]
 
 	public PlayerState state = PlayerState.Idle;
-
-	[Space(10)]
-
-	public bool isJumping = false;
 	public bool repeatJump = false;
 
 	[Space(10)]
@@ -52,14 +41,11 @@ public class PlayerScript : MonoBehaviour
 
 	void Update()
 	{
-		Debug.Log(state);
-
 		// Handle State
 		switch (state) {
 			case PlayerState.Idle:
 				// Update Animator
 				animator.SetBool("isCrouching", false);
-				animator.SetBool("repeatJump", false);
 
 				// Check for Crouch
 				if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) {
@@ -72,12 +58,12 @@ public class PlayerScript : MonoBehaviour
 			case PlayerState.Crouch:
 				// Update Animator
 				animator.SetBool("isCrouching", true);
-				animator.SetBool("repeatJump", false);
 
 				// Check for Jump
 				if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D)) {
 					if (!(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))) {
 						state = PlayerState.Jump;
+						animator.SetTrigger("shouldJump");
 					}
 				}
 
@@ -88,22 +74,17 @@ public class PlayerScript : MonoBehaviour
 				// Update Animator
 				animator.SetBool("isCrouching", false);
 
-				// Jumping
-				if (isJumping) {
-					// Move
-					transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
+				// Move
+				transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
 
-					// Check for Chaining
-					if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D)) {
-						repeatJump = true;
-						animator.SetBool("repeatJump", true);
-					}
-
-					// Check for Crouch
-					animator.SetBool("isCrouching", Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D));
-				} else {
-					isJumping = true;
+				// Check for Chaining
+				if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D)) {
+					repeatJump = true;
+					animator.SetTrigger("shouldJump");
 				}
+
+				// Check for Crouch
+				animator.SetBool("isCrouching", Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D));
 				break;
 		}
 
@@ -135,16 +116,10 @@ public class PlayerScript : MonoBehaviour
 		// Repeat Jump
 		if (repeatJump) {
 			repeatJump = false;
-			animator.SetBool("repeatJump", false);
 		} else {
-			// Stop Jumping
-			isJumping = false;
-
 			// Check for Crouch
-			if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) {
-				if (animator.GetBool("isCrouching")) {
-					state = PlayerState.Crouch;
-				}
+			if (animator.GetBool("isCrouching")) {
+				state = PlayerState.Crouch;
 			} else {
 				state = PlayerState.Idle;
 			}

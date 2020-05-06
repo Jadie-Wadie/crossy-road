@@ -7,17 +7,11 @@ public class PlayerAnimScript : StateMachineBehaviour
 	private PlayerScript playerScript;
 
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-		if (stateInfo.IsName("Jump")) {
-			animator.GetComponent<PlayerScript>().jumpSpeed = stateInfo.length;
-		}
+		if (stateInfo.IsName("Jump")) animator.GetComponent<PlayerScript>().jumpSpeed = stateInfo.length;
 	}
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) 
 	{
-		if (stateInfo.IsName("Jump")) {
-			Debug.Log("Over 1");
-			animator.GetComponent<PlayerScript>().JumpOver();
-			Debug.Log("Over 2");
-		}
+		if (stateInfo.IsName("Jump")) animator.GetComponent<PlayerScript>().JumpOver();
     }
 }
