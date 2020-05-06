@@ -35,6 +35,10 @@ public class WorldScript : MonoBehaviour
 
 	[Space(10)]
 
+	public Vector3 offset;
+
+	[Space(10)]
+
 	public List<int> weights = new List<int>();
 
 	[Space(10)]
@@ -77,20 +81,17 @@ public class WorldScript : MonoBehaviour
 		}
 
 		// Instantiate
-		GameObject lane = Instantiate(type.prefab, new Vector3(0, 0, counter++), Quaternion.identity);
+		GameObject lane = Instantiate(type.prefab, offset + new Vector3(0, 0, counter++), Quaternion.identity);
 		lane.transform.SetParent(laneParent);
 
-		LaneScript script = lane.GetComponent<LaneScript>();
+		LaneScript laneScript = lane.GetComponent<LaneScript>();
 
-		if (script.variants.Length != 0) {
-			int variant = Mathf.Abs(counter) % (script.variants.Length + 1);
-			if (variant != 0) {
-				Debug.Log("OwO");
-				script.SetVariant(variant);
-			}
+		if (laneScript.variants.Length != 0) {
+			int variant = Mathf.Abs(counter) % (laneScript.variants.Length + 1);
+			if (variant != 0) laneScript.SetVariant(variant);
 		}
 
-		script.Populate(prevLane.type, prevLane.script);
-		prevLane = (type, script);
+		laneScript.Populate(prevLane.type, prevLane.script);
+		prevLane = (type, laneScript);
 	}
 }

@@ -11,25 +11,32 @@ public struct LaneVariant {
 public class LaneScript : MonoBehaviour
 {
 	[Header("Control")]
+	public GameObject leftEnd;
+	public GameObject rightEnd;
+
+	[Space(10)]
+
 	public LaneVariant[] variants;
 
 	[Space(10)]
 
-	public GameObject[] objects;
+	public PopulateScript script;
 
-	[Header("Debug")]
-	public MeshRenderer meshRenderer;
+	[HideInInspector]
+	public GameObject[] objects;
 
 	// Set Lane Variant
 	public void SetVariant(int index) {
-		if (meshRenderer == null) meshRenderer = GetComponent<MeshRenderer>();
-
 		LaneVariant variant = variants[index - 1];
-		meshRenderer.material = variant.materialA;
+
+		GetComponent<MeshRenderer>().material = variant.materialA;
+
+		leftEnd.GetComponent<MeshRenderer>().material = variant.materialB;
+		rightEnd.GetComponent<MeshRenderer>().material = variant.materialB;
 	}
 
 	// Populate Objects
-    public virtual void Populate(LaneType? type = null, LaneScript script = null) {
-		Debug.LogWarning($"{this.GetType()}.Populate() is not overridden");
+    public void Populate(LaneType? type = null, LaneScript laneScript = null) {
+		if (script != null) script.Populate(type, laneScript);
 	}
 }

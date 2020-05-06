@@ -12,8 +12,6 @@ public class GameScript : MonoBehaviour
 
 	public GameObject[] players;
 
-	
-
 	[Header("Debug")]
 	private int playerCount = 2;
 
@@ -31,9 +29,8 @@ public class GameScript : MonoBehaviour
 	void SpawnPlayers() {
 		players = new GameObject[playerCount];
 
-		int laneWidth = 9;
 		for (int i = 0; i < playerCount; i++) {
-			players[i] = Instantiate(playerPrefab, new Vector3(laneWidth / (playerCount + 1) * (i + 1) - Mathf.Ceil(laneWidth / 2f), 1, 0), Quaternion.identity);
+			players[i] = Instantiate(playerPrefab, new Vector3(8 / (playerCount + 1) * (i + 1) - 4, 1, 0), Quaternion.identity);
 			players[i].transform.SetParent(playerParent);
 		}
 
