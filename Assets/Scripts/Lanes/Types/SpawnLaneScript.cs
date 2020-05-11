@@ -5,31 +5,27 @@ using UnityEngine;
 public class SpawnLaneScript : PopulateScript
 {
 	[Header("GameObjects")]
-	public int max = 3;
 	public GameObject[] obstacles;
 
-	[Space(10)]
-
-	private List<int> spawns;
-
     public override void Populate(LaneType? type = null, LaneScript laneScript = null) {
-		// Initialise List
-		spawns = new List<int>();
-		for (int i = -3; i < 5; i++) {
-			spawns.Add(i);
+		PopulateEnds();	
+	}
+
+	// Spawn Trees at Ends
+	public void PopulateEnds() {
+		void SpawnTree(int x, Transform parent) {
+			if (Random.Range(0, 101) < 95) {
+				GameObject obstacle = Instantiate(obstacles[Random.Range(0, obstacles.Length)], transform.position + new Vector3(x + 0.5f, 0, 0), Quaternion.identity);
+				obstacle.transform.SetParent(parent);
+			}
 		}
 
-		// Generate Obstacles
-		int count = Random.Range(0, max);
+		Transform lEnd = transform.Find("lEnd");
+		Transform rEnd = transform.Find("rEnd");
 
-		for (int i = 0; i < count; i++) {
-			int rand = Random.Range(0, spawns.Count);
-
-			GameObject obstacle = Instantiate(obstacles[Random.Range(0, obstacles.Length)], transform.position + new Vector3(spawns[rand] - 0.5f, 0, 0), Quaternion.identity);
-			obstacle.transform.SetParent(transform);
-
-			spawns.RemoveAt(rand);
-			if (spawns.Count == 0) break;
+		for (int i = 0; i < laneWidth; i++) {
+			SpawnTree(i - Mathf.RoundToInt(laneWidth * 1.5f), lEnd);
+			SpawnTree(i + Mathf.RoundToInt(laneWidth * 0.5f), rEnd);
 		}
 	}
 }

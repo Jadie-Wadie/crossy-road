@@ -468,7 +468,7 @@ MonoBehaviour:
   cameraPrefab: {fileID: 6572193039672208485, guid: e3432db9be02b964d92c2f84c8df177a,
     type: 3}
   cameraParent: {fileID: 2065169239}
-  cameraOffset: {x: 0.75, y: 10, z: -6}
+  cameraOffset: {x: 0.75, y: 10, z: -5}
   cameraLinePrefab: {fileID: 477468555328696133, guid: 7ccc1b307660bca4ca0e6692e4d55c61,
     type: 3}
   lineParent: {fileID: 739535902}

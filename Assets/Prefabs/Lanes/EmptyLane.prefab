@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2633857512288624476}
   - component: {fileID: 5020400579011459689}
   m_Layer: 0
-  m_Name: Left
+  m_Name: lEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 6465463266842568713}
   - component: {fileID: 4773416231619854351}
   m_Layer: 0
-  m_Name: Right
+  m_Name: rEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -291,8 +291,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54050b84503b2cf498f1cdcd1c411e25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftEnd: {fileID: 1240743778556213546}
-  rightEnd: {fileID: 4427196456111818740}
+  lEnd: {fileID: 1240743778556213546}
+  rEnd: {fileID: 4427196456111818740}
   variants: []
   script: {fileID: 0}
   objects: []

@@ -4,15 +4,15 @@ using UnityEngine;
 
 [System.Serializable]
 public struct LaneVariant {
-	public Material materialA;
-	public Material materialB;
+	public Material matA;
+	public Material matB;
 }
 
 public class LaneScript : MonoBehaviour
 {
 	[Header("Control")]
-	public GameObject leftEnd;
-	public GameObject rightEnd;
+	public GameObject lEnd;
+	public GameObject rEnd;
 
 	[Space(10)]
 
@@ -29,10 +29,10 @@ public class LaneScript : MonoBehaviour
 	public void SetVariant(int index) {
 		LaneVariant variant = variants[index - 1];
 
-		GetComponent<MeshRenderer>().material = variant.materialA;
+		GetComponent<MeshRenderer>().material = variant.matA;
 
-		leftEnd.GetComponent<MeshRenderer>().material = variant.materialB;
-		rightEnd.GetComponent<MeshRenderer>().material = variant.materialB;
+		lEnd.GetComponent<MeshRenderer>().material = variant.matB;
+		rEnd.GetComponent<MeshRenderer>().material = variant.matB;
 	}
 
 	// Populate Objects

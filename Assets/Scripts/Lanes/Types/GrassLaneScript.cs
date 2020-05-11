@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrassLaneScript : PopulateScript
+public class GrassLaneScript : SpawnLaneScript
 {
 	[Header("GameObjects")]
-	public int max = 3;
-	public GameObject[] obstacles;
+	public Vector2Int chance;
 
 	[Space(10)]
 
 	private List<int> spawns;
 
     public override void Populate(LaneType? type = null, LaneScript laneScript = null) {
+		// Populate Ends
+		PopulateEnds();
+
 		// Initialise List
 		spawns = new List<int>();
-		for (int i = -3; i < 5; i++) {
+		for (int i = -Mathf.RoundToInt(laneWidth / 2) + 1; i < Mathf.RoundToInt(laneWidth / 2) + 1; i++) {
 			spawns.Add(i);
 		}
 
 		// Generate Obstacles
-		int count = Random.Range(0, max);
-
+		int count = Random.Range(chance.x, chance.y + 1);
+		
 		for (int i = 0; i < count; i++) {
 			int rand = Random.Range(0, spawns.Count);
 
