@@ -5,12 +5,12 @@ using UnityEngine;
 public class CameraScript : MonoBehaviour
 {
     [Header("Control")]
-	public GameObject[] targets;
+	public GameObject target;
 
 	[Space(10)]
 
-	public float damp = 0.2f;
-	public Vector3 offset = new Vector3(2.5f, 8f, -6.5f);
+	public Vector3 offset;
+	public float damp = 0.25f;
 
 	[Header("Debug")]
     private Vector3 velocity;
@@ -21,13 +21,6 @@ public class CameraScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector3 targetPos = new Vector3(0, 0, 0);
-
-		for (int i = 0; i < targets.Length; i++) {
-			targetPos.z += targets[i].transform.position.z;
-		}
-		if (targets.Length != 0) targetPos.z /= targets.Length;
-
-		transform.position = Vector3.SmoothDamp(transform.position, targetPos + offset, ref velocity, damp);
+		transform.position = Vector3.SmoothDamp(transform.position, new Vector3(0, 0, target.transform.position.z) + offset, ref velocity, damp);
     }
 }

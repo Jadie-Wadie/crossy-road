@@ -20,9 +20,6 @@ public class WorldScript : MonoBehaviour
 {
 	[Header("Control")]
 	public LaneType[] types;
-
-	[Space(10)]
-
 	public Transform laneParent;
 
 	[Header("Generation")]
@@ -39,7 +36,7 @@ public class WorldScript : MonoBehaviour
 
 	[Space(10)]
 
-	public List<int> weights = new List<int>();
+	private List<int> weights = new List<int>();
 
 	[Space(10)]
 

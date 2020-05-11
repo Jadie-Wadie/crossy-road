@@ -4,6 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+[System.Serializable]
+public struct Keybinds {
+	public KeyCode W;
+	public KeyCode A;
+	public KeyCode S;
+	public KeyCode D;
+}
+
 public enum PlayerState {
 	Idle,
 	Crouch,
@@ -23,6 +31,9 @@ public class PlayerScript : MonoBehaviour
 	[Space(10)]
 
 	public int direction = 0;
+
+	[Header("Input")]
+	public Keybinds keybinds;
 	
 	[Header("GameObjects")]
 	public GameObject[] models;
@@ -48,7 +59,7 @@ public class PlayerScript : MonoBehaviour
 				animator.SetBool("isCrouching", false);
 
 				// Check for Crouch
-				if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) {
+				if (Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D)) {
 					state = PlayerState.Crouch;
 				}
 
@@ -60,8 +71,8 @@ public class PlayerScript : MonoBehaviour
 				animator.SetBool("isCrouching", true);
 
 				// Check for Jump
-				if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D)) {
-					if (!(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))) {
+				if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D)) {
+					if (!(Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D))) {
 						state = PlayerState.Jump;
 						animator.SetTrigger("shouldJump");
 					}
@@ -78,30 +89,30 @@ public class PlayerScript : MonoBehaviour
 				transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
 
 				// Check for Chaining
-				if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D)) {
+				if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D)) {
 					repeatJump = true;
 					animator.SetTrigger("shouldJump");
 				}
 
 				// Check for Crouch
-				animator.SetBool("isCrouching", Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D));
+				animator.SetBool("isCrouching", Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D));
 				break;
 		}
 
 		// Handle Looking
-		if (Input.GetKeyDown(KeyCode.W)) {
+		if (Input.GetKeyDown(keybinds.W)) {
 			direction = 0;
 		}
 
-		if (Input.GetKey(KeyCode.A) ) {
+		if (Input.GetKey(keybinds.A) ) {
 			direction = 3;
 		}
 
-		if (Input.GetKey(KeyCode.S)) {
+		if (Input.GetKey(keybinds.S)) {
 			direction = 2;
 		}
 
-		if (Input.GetKey(KeyCode.D)) {
+		if (Input.GetKey(keybinds.D)) {
 			direction = 1;
 		}
 	}
