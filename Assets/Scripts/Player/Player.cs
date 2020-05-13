@@ -5,20 +5,22 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 [System.Serializable]
-public struct Keybinds {
+public struct Keybinds
+{
 	public KeyCode W;
 	public KeyCode A;
 	public KeyCode S;
 	public KeyCode D;
 }
 
-public enum PlayerState {
+public enum PlayerState
+{
 	Idle,
 	Crouch,
 	Jump
 }
 
-public class PlayerScript : MonoBehaviour
+public class Player : MonoBehaviour
 {
 	[Header("Control")]
 	public GameObject model;
@@ -34,14 +36,14 @@ public class PlayerScript : MonoBehaviour
 
 	[Header("Input")]
 	public Keybinds keybinds;
-	
+
 	[Header("GameObjects")]
 	public GameObject[] models;
 
 	[Header("Animation")]
 	public float jumpSpeed;
 	private Animator animator;
-	
+
 	void Start()
 	{
 		model = transform.Find("Model").gameObject;
@@ -53,13 +55,15 @@ public class PlayerScript : MonoBehaviour
 	void Update()
 	{
 		// Handle State
-		switch (state) {
+		switch (state)
+		{
 			case PlayerState.Idle:
 				// Update Animator
 				animator.SetBool("isCrouching", false);
 
 				// Check for Crouch
-				if (Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D)) {
+				if (Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D))
+				{
 					state = PlayerState.Crouch;
 				}
 
@@ -71,8 +75,10 @@ public class PlayerScript : MonoBehaviour
 				animator.SetBool("isCrouching", true);
 
 				// Check for Jump
-				if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D)) {
-					if (!(Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D))) {
+				if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D))
+				{
+					if (!(Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D)))
+					{
 						state = PlayerState.Jump;
 						animator.SetTrigger("shouldJump");
 					}
@@ -89,7 +95,8 @@ public class PlayerScript : MonoBehaviour
 				transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
 
 				// Check for Chaining
-				if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D)) {
+				if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D))
+				{
 					repeatJump = true;
 					animator.SetTrigger("shouldJump");
 				}
@@ -100,24 +107,29 @@ public class PlayerScript : MonoBehaviour
 		}
 
 		// Handle Looking
-		if (Input.GetKeyDown(keybinds.W)) {
+		if (Input.GetKeyDown(keybinds.W))
+		{
 			direction = 0;
 		}
 
-		if (Input.GetKey(keybinds.A) ) {
+		if (Input.GetKey(keybinds.A))
+		{
 			direction = 3;
 		}
 
-		if (Input.GetKey(keybinds.S)) {
+		if (Input.GetKey(keybinds.S))
+		{
 			direction = 2;
 		}
 
-		if (Input.GetKey(keybinds.D)) {
+		if (Input.GetKey(keybinds.D))
+		{
 			direction = 1;
 		}
 	}
 
-	public void JumpOver() {
+	public void JumpOver()
+	{
 		// Round
 		transform.position = new Vector3((float)Math.Round(transform.position.x), 1, (float)Math.Round(transform.position.z));
 
@@ -125,13 +137,19 @@ public class PlayerScript : MonoBehaviour
 		model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
 
 		// Repeat Jump
-		if (repeatJump) {
+		if (repeatJump)
+		{
 			repeatJump = false;
-		} else {
+		}
+		else
+		{
 			// Check for Crouch
-			if (animator.GetBool("isCrouching")) {
+			if (animator.GetBool("isCrouching"))
+			{
 				state = PlayerState.Crouch;
-			} else {
+			}
+			else
+			{
 				state = PlayerState.Idle;
 			}
 		}

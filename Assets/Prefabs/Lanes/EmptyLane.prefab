@@ -196,7 +196,6 @@ GameObject:
   - component: {fileID: 6396880731183786447}
   - component: {fileID: 6396880731183786432}
   - component: {fileID: 6396880731183786433}
-  - component: {fileID: 6396880731183786445}
   m_Layer: 0
   m_Name: EmptyLane
   m_TagString: Untagged
@@ -279,20 +278,3 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6396880731183786445
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6396880731183786434}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54050b84503b2cf498f1cdcd1c411e25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lEnd: {fileID: 1240743778556213546}
-  rEnd: {fileID: 4427196456111818740}
-  variants: []
-  script: {fileID: 0}
-  objects: []

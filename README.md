@@ -6,9 +6,9 @@ A list of improvements and features for `unity-crossy-road`.
 
 -   [x] Add 2nd player controls.
 -   [x] Add camera generation.
--   [x] Make camera follow player x.
+-   [x] Make camera follow player.
 -   [ ] Add infinite generation.
--   [x] Complete the `Spawn` and `Grass` lane population.
+-   [ ] Complete the `Spawn` and `Grass` lane population.
 -   [ ] Add player collision.
 
 ## User Interface
@@ -19,6 +19,7 @@ A list of improvements and features for `unity-crossy-road`.
 ## Other
 
 -   [x] Add a singleplayer / multiplayer selector to the GameScript, instead of `playerCount`.
+-   [x] Refactor script naming and Lane handling.
 -   [ ] Add `Walkable` and `Not Walkable` layers for detecting collision.
 
 ## Bugs

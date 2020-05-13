@@ -91,13 +91,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 2925789479202780732}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 982f0e3aa65af0a419030c8acfbbdb55, type: 3}
+  m_Script: {fileID: 11500000, guid: b19490fc936805c4ca7f33f3764f4361, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   model: {fileID: 0}
   state: 0
   repeatJump: 0
   direction: 0
+  keybinds:
+    W: 0
+    A: 0
+    S: 0
+    D: 0
   models:
   - {fileID: 560467690882499237, guid: e93da06ad7960aa42b4010a16868590c, type: 3}
   jumpSpeed: 0

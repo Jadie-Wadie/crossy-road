@@ -40,11 +40,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5893448381599628740}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a49135d91bd877249b7cf896c88d08e6, type: 3}
+  m_Script: {fileID: 11500000, guid: e04817c45d0f6c5408178c093dd109ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  variants:
-  - {fileID: 5358047128270065152, guid: 1fd6f3dc1223f46439b69e00bbde94f7, type: 3}
-  - {fileID: 107956724907577297, guid: 5266a7ee2d0f1fe4b9ea2829f75cec7a, type: 3}
-  - {fileID: 7099789185257072900, guid: 3a8bd278a1816f9488db044f6bbea0f1, type: 3}
-  - {fileID: 1952419457916342409, guid: 63ce72cd40d92554593f6cced70dda4b, type: 3}
+  variants: []
