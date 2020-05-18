@@ -2,57 +2,76 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public struct LaneVariant
+public abstract class Lane : MonoBehaviour
 {
-	public Material matA;
-	public Material matB;
-}
+	[System.Serializable]
+	public struct Variant
+	{
+		public Material main;
+		public Material ends;
+	}
 
-[System.Serializable]
-public struct SpawnedLane
-{
-	public GameObject gameObject;
-
-}
-
-public class Lane : MonoBehaviour
-{
 	[Header("Control")]
-	public LaneVariant[] variants;
-
-	[Space(10)]
-
 	public static int laneWidth = 8;
 
 	[Header("GameObjects")]
-	private GameObject lEnd;
-	private GameObject rEnd;
+	public GameObject cube;
 
 	[Space(10)]
 
-	public GameObject[] objects;
+	public GameObject[] objects = new GameObject[laneWidth + 2];
 
-	void Awake()
+	[Space(10)]
+
+	[HideInInspector]
+	public GameObject main;
+	[HideInInspector]
+	public GameObject lEnd;
+	[HideInInspector]
+	public GameObject rEnd;
+
+	[Header("Variants")]
+	public Variant[] variants;
+
+	public void Awake()
 	{
-		lEnd = transform.Find("lEnd").gameObject;
-		rEnd = transform.Find("rEnd").gameObject;
+		SpawnObjects();
 	}
 
-	// Set Lane Variant
-	public void SetVariant(int index)
+	// Spawn the Lane Objects
+	public void SpawnObjects()
 	{
-		LaneVariant variant = variants[index - 1];
+		// Spawn Center
+		main = Instantiate(cube, this.transform.position, Quaternion.identity);
+		main.transform.SetParent(transform);
 
-		GetComponent<MeshRenderer>().material = variant.matA;
+		main.name = "Main";
+		main.transform.localScale = new Vector3(laneWidth, 1, 1);
 
-		lEnd.GetComponent<MeshRenderer>().material = variant.matB;
-		rEnd.GetComponent<MeshRenderer>().material = variant.matB;
+		// Spawn Left
+		lEnd = Instantiate(cube, this.transform.position - new Vector3(laneWidth, 0, 0), Quaternion.identity);
+		lEnd.transform.SetParent(transform);
+
+		lEnd.name = "lEnd";
+		lEnd.transform.localScale = new Vector3(laneWidth, 1, 1);
+
+		// Spawn Right
+		rEnd = Instantiate(cube, this.transform.position + new Vector3(laneWidth, 0, 0), Quaternion.identity);
+		rEnd.transform.SetParent(transform);
+
+		rEnd.name = "rEnd";
+		rEnd.transform.localScale = new Vector3(laneWidth, 1, 1);
+	}
+
+	// Set the Lane Variant
+	public void SetVariant(int i)
+	{
+		Variant variant = variants[i];
+		main.GetComponent<MeshRenderer>().material = variant.main;
+		lEnd.GetComponent<MeshRenderer>().material = variant.ends;
+		rEnd.GetComponent<MeshRenderer>().material = variant.ends;
 	}
 
 	// Populate Lane
-	public virtual void Populate(SpawnedLane prevLane)
-	{
-		Debug.Log($"{this.GetType()}.Populate()");
-	}
+	public abstract void Populate(Lane prevLane);
 }

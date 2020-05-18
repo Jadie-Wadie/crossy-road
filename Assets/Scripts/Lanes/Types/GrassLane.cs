@@ -4,30 +4,27 @@ using UnityEngine;
 
 public class GrassLane : SpawnLane
 {
-	/*
-
-	[Header("GameObjects")]
-	public Vector2Int chance;
-
-	[Space(10)]
-
-	private List<int> spawns;
-	
-	public override void Populate()
+	public override void Populate(Lane prevLane)
 	{
 		// Populate Ends
 		PopulateEnds();
 
 		// Log Prev Lane
-		
-		switch (type)
+		switch (prevLane)
 		{
+			case GrassLane grass:
+				Debug.Log("Grass");
+				break;
+
+			case SpawnLane spawn:
+				Debug.Log("Spawn");
+				break;
+
 			default:
 				break;
 		}
 
 		/*
-
 		// Initialise List
 		spawns = new List<int>();
 		for (int i = -Mathf.RoundToInt(laneWidth / 2) + 1; i < Mathf.RoundToInt(laneWidth / 2) + 1; i++)
@@ -48,9 +45,6 @@ public class GrassLane : SpawnLane
 			spawns.RemoveAt(rand);
 			if (spawns.Count == 0) break;
 		}
-
-		*\/
+		*/
 	}
-
-	*/
 }

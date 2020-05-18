@@ -3,30 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public struct LaneType
+public struct Weight
 {
-	public GameObject prefab;
-
-	[Space(10)]
-
+	public GameObject value;
 	public int weight;
-	public bool spawn;
 }
 
+[RequireComponent(typeof(GameController))]
 public class WorldGenerator : MonoBehaviour
 {
 	[Header("Control")]
-	public LaneType[] lanes;
-
-	[Space(10)]
-
-	public Transform laneParent;
-
-	[Header("Generation")]
-	public int counter = 0;
-
-	[Space(10)]
-
 	public int spawnLength = 1;
 
 	[Space(10)]
@@ -34,16 +20,35 @@ public class WorldGenerator : MonoBehaviour
 	public Vector2Int buffer = new Vector2Int(5, 15);
 	public Vector3 offset;
 
-	[Header("Debug")]
-	private List<LaneType> weights = new List<LaneType>();
+	[Header("GameObjects")]
+	public Transform laneParent;
 
 	[Space(10)]
 
-	private SpawnedLane prevLane;
+	public GameObject spawn;
+	public Weight[] weights;
+
+	[Space(10)]
+
+	public List<GameObject> laneObjects = new List<GameObject>();
+
+	[Header("Debug")]
+	public GameController gameController;
+
+	[Space(10)]
+
+	public int counter = 0;
+
+	[Space(10)]
+
+	private List<GameObject> lanes = new List<GameObject>();
+	private Lane prevLane;
 
 	void Start()
 	{
 		// Initalise Variables
+		gameController = GetComponent<GameController>();
+
 		counter = -buffer.x;
 		CalculateWeights();
 
@@ -54,14 +59,37 @@ public class WorldGenerator : MonoBehaviour
 		}
 	}
 
+	void Update()
+	{
+		// Calculate Player Positions
+		(float back, float front) positions = (Mathf.Infinity, 0);
+		foreach (GameObject player in gameController.players)
+		{
+			positions = (Mathf.Min(positions.back, player.transform.position.z), Mathf.Max(positions.front, player.transform.position.z));
+		}
+
+		// Create New Lanes
+		if (counter < positions.front + buffer.y) SpawnLane();
+
+		// Destroy Previous Lanes
+		foreach (GameObject lane in laneObjects.ToArray())
+		{
+			if (lane.transform.position.z < positions.back - buffer.x)
+			{
+				laneObjects.Remove(lane);
+				Destroy(lane);
+			}
+		}
+	}
+
 	// Calculate Lane Type Weightings
 	void CalculateWeights()
 	{
-		for (int i = 0; i < lanes.Length; i++)
+		for (int i = 0; i < weights.Length; i++)
 		{
-			for (int j = 0; j < lanes[i].weight; j++)
+			for (int j = 0; j < weights[i].weight; j++)
 			{
-				weights.Add(lanes[i]);
+				lanes.Add(weights[i].value);
 			}
 		}
 	}
@@ -69,37 +97,23 @@ public class WorldGenerator : MonoBehaviour
 	// Spawn Lane
 	void SpawnLane()
 	{
-		// Determine Lane Type (Respecting Spawn Length)
-		LaneType laneType = weights[Random.Range(0, weights.Count)];
-
-		if (counter < spawnLength)
-		{
-			for (int i = 0; i < lanes.Length; i++)
-			{
-				if (lanes[i].spawn)
-				{
-					laneType = lanes[i];
-					break;
-				}
-			}
-		}
+		// Determine Lane Type
+		GameObject lanePrefab = lanes[Random.Range(0, lanes.Count)];
+		if (counter < spawnLength) lanePrefab = spawn;
 
 		// Spawn the Lane
-		GameObject laneObject = Instantiate(laneType.prefab, new Vector3(0, 0, counter) + offset, Quaternion.identity);
+		GameObject laneObject = Instantiate(lanePrefab, new Vector3(0, 0, counter) + offset, Quaternion.identity);
 		laneObject.transform.SetParent(laneParent);
 
 		// Set Lane Variant
 		Lane lane = laneObject.GetComponent<Lane>();
-		if (lane.variants.Length != 0)
-		{
-			int variant = Mathf.Abs(counter) % (lane.variants.Length + 1);
-			if (variant != 0) lane.SetVariant(variant);
-		}
+		if (lane.variants.Length != 0) lane.SetVariant(Mathf.Abs(counter) % lane.variants.Length);
 
 		// Populate the Lane
-		Debug.Log($"Spawned a {lane.GetType()}");
+		lane.Populate(prevLane);
 
 		// Increase Counter
+		laneObjects.Add(laneObject);
 		counter++;
 	}
 }

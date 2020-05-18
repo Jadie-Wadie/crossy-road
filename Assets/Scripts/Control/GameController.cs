@@ -19,7 +19,8 @@ public class GameController : MonoBehaviour
 
 	[Space(10)]
 
-	private GameObject[] players;
+	[HideInInspector]
+	public GameObject[] players;
 
 	[Header("Camera")]
 

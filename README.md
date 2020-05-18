@@ -7,7 +7,7 @@ A list of improvements and features for `unity-crossy-road`.
 -   [x] Add 2nd player controls.
 -   [x] Add camera generation.
 -   [x] Make camera follow player.
--   [ ] Add infinite generation.
+-   [x] Add infinite generation.
 -   [ ] Complete the `Spawn` and `Grass` lane population.
 -   [ ] Add player collision.
 
