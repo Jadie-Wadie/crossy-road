@@ -8,8 +8,9 @@ A list of improvements and features for `unity-crossy-road`.
 -   [x] Add camera generation.
 -   [x] Make camera follow player.
 -   [x] Add infinite generation.
--   [ ] Complete the `Spawn` and `Grass` lane population.
+-   [x] Complete the `Grass` lane population.
 -   [ ] Add player collision.
+-   [ ] Add `Water` and `Road` lanes.
 
 ## User Interface
 
@@ -25,4 +26,4 @@ A list of improvements and features for `unity-crossy-road`.
 ## Bugs
 
 -   [x] Player can slide after jumping.
--   [ ] `Grass` lane can create impossible levels.
+-   [x] `Grass` lane can create impossible levels.

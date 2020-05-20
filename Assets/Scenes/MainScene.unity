@@ -503,10 +503,12 @@ MonoBehaviour:
   buffer: {x: 5, y: 15}
   offset: {x: -0.5, y: 0, z: 0}
   laneParent: {fileID: 1527590419}
-  spawn: {fileID: 6174929318689619661, guid: bd6be5faf201ac546812c9eeb07926ee, type: 3}
+  spawn: {fileID: 5112734177731990834, guid: 495317b3370b94b4783f268db155b6e6, type: 3}
   weights:
   - value: {fileID: 5112734177731990834, guid: 495317b3370b94b4783f268db155b6e6, type: 3}
     weight: 3
+  laneObjects: []
+  gameController: {fileID: 0}
   counter: 0
 --- !u!114 &1372624905
 MonoBehaviour:
@@ -524,6 +526,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 2925789479202780732, guid: f61e350252aa03a43a3defa9803153c6,
     type: 3}
   playerParent: {fileID: 1583189411}
+  players: []
   cameraPrefab: {fileID: 6572193039672208485, guid: e3432db9be02b964d92c2f84c8df177a,
     type: 3}
   cameraParent: {fileID: 2065169239}

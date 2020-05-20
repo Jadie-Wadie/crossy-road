@@ -1,50 +1,77 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class GrassLane : SpawnLane
+public class GrassLane : Lane
 {
+	[Header("Control")]
+	public int obstacleCount = 2;
+
+	[Range(0, 100)]
+	public int obstacleDensity = 90;
+
+	[Header("Obstacles")]
+	public Weight[] weights;
+
+	[HideInInspector]
+	public List<GameObject> obstacles = new List<GameObject>();
+
+	new public void Awake()
+	{
+		base.Awake();
+
+		// Calculate Weights
+		for (int i = 0; i < weights.Length; i++)
+		{
+			for (int j = 0; j < weights[i].weight; j++)
+			{
+				obstacles.Add(weights[i].value);
+			}
+		}
+	}
+
 	public override void Populate(Lane prevLane)
 	{
-		// Populate Ends
-		PopulateEnds();
-
-		// Log Prev Lane
-		switch (prevLane)
+		// Spawn Obstacles on Edges
+		for (int i = 0; i < laneWidth; i++)
 		{
-			case GrassLane grass:
-				Debug.Log("Grass");
-				break;
-
-			case SpawnLane spawn:
-				Debug.Log("Spawn");
-				break;
-
-			default:
-				break;
+			if (Random.Range(0, 100) < obstacleDensity) SpawnObstacle(i - Mathf.RoundToInt(laneWidth), lEnd.transform, false);
+			if (Random.Range(0, 100) < obstacleDensity) SpawnObstacle(i + Mathf.RoundToInt(laneWidth), rEnd.transform, false);
 		}
 
-		/*
-		// Initialise List
-		spawns = new List<int>();
-		for (int i = -Mathf.RoundToInt(laneWidth / 2) + 1; i < Mathf.RoundToInt(laneWidth / 2) + 1; i++)
+		// Create Valid Position List
+		List<int> positions = Enumerable.Range(0, laneWidth / 2 - 1)
+			.Concat(Enumerable.Range(laneWidth / 2 + 1, laneWidth / 2 - 1))
+			.ToList();
+
+		if (prevLane != null && prevLane.GetType() == typeof(GrassLane))
 		{
-			spawns.Add(i);
+			if (prevLane.objects[laneWidth / 2 - 1] == null && prevLane.objects[laneWidth / 2] == null)
+			{
+				positions.Add(Random.Range(laneWidth / 2 - 1, laneWidth / 2 + 1));
+			}
 		}
 
-		// Generate Obstacles
-		int count = Random.Range(chance.x, chance.y + 1);
-
-		for (int i = 0; i < count; i++)
+		// Spawn Obstacles in Center
+		for (int i = 0; i < obstacleCount; i++)
 		{
-			int rand = Random.Range(0, spawns.Count);
+			int position = positions[Random.Range(0, positions.Count)];
+			positions.Remove(position);
 
-			GameObject obstacle = Instantiate(obstacles[Random.Range(0, obstacles.Length)], transform.position + new Vector3(spawns[rand] - 0.5f, 0, 0), Quaternion.identity);
-			obstacle.transform.SetParent(transform);
+			SpawnObstacle(position, main.transform, true);
 
-			spawns.RemoveAt(rand);
-			if (spawns.Count == 0) break;
+			if (positions.Count == 0) break;
 		}
-		*/
+	}
+
+	// Spawn Obstacle
+	GameObject SpawnObstacle(int position, Transform parent, bool isObject)
+	{
+		GameObject obstacle = Instantiate(obstacles[Random.Range(0, obstacles.Count)], transform.position + new Vector3(0.5f - laneWidth / 2 + position, 0, 0), Quaternion.identity);
+		obstacle.transform.SetParent(parent);
+
+		if (isObject) objects[position] = obstacle;
+		return obstacle;
 	}
 }

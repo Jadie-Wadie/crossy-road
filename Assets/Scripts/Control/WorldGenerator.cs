@@ -111,6 +111,7 @@ public class WorldGenerator : MonoBehaviour
 
 		// Populate the Lane
 		lane.Populate(prevLane);
+		prevLane = lane;
 
 		// Increase Counter
 		laneObjects.Add(laneObject);

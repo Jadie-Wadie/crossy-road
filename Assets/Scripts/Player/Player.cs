@@ -13,15 +13,15 @@ public struct Keybinds
 	public KeyCode D;
 }
 
-public enum PlayerState
-{
-	Idle,
-	Crouch,
-	Jump
-}
-
 public class Player : MonoBehaviour
 {
+	public enum PlayerState
+	{
+		Idle,
+		Crouch,
+		Jump
+	}
+
 	[Header("Control")]
 	public GameObject model;
 

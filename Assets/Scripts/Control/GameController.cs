@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Gamemode
-{
-	Singleplayer, Multiplayer
-}
+
 
 public class GameController : MonoBehaviour
 {
+	public enum Gamemode
+	{
+		Singleplayer, Multiplayer
+	}
+
 	[Header("Control")]
 	public Gamemode gamemode;
 

@@ -19,7 +19,8 @@ public abstract class Lane : MonoBehaviour
 
 	[Space(10)]
 
-	public GameObject[] objects = new GameObject[laneWidth + 2];
+	[HideInInspector]
+	public GameObject[] objects = new GameObject[laneWidth];
 
 	[Space(10)]
 
@@ -74,4 +75,20 @@ public abstract class Lane : MonoBehaviour
 
 	// Populate Lane
 	public abstract void Populate(Lane prevLane);
+
+	/*
+	switch (prevLane)
+	{
+		case GrassLane grass:
+			Debug.Log("Grass");
+			break;
+
+		case SpawnLane spawn:
+			Debug.Log("Spawn");
+			break;
+
+		default:
+			break;
+	}
+	*/
 }
