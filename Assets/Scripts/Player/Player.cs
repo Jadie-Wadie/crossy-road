@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
 	[Space(10)]
 
 	public int direction = 0;
+	public bool canMove = true;
 
 	[Header("Input")]
 	public Keybinds keybinds;
@@ -77,10 +78,12 @@ public class Player : MonoBehaviour
 				// Check for Jump
 				if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D))
 				{
-					if (!(Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D)))
+					if (!Input.GetKey(keybinds.W) && !Input.GetKey(keybinds.A) && !Input.GetKey(keybinds.S) && !Input.GetKey(keybinds.D))
 					{
 						state = PlayerState.Jump;
 						animator.SetTrigger("shouldJump");
+
+						CheckMovement();
 					}
 				}
 
@@ -92,7 +95,7 @@ public class Player : MonoBehaviour
 				animator.SetBool("isCrouching", false);
 
 				// Move
-				transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
+				if (canMove) transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
 
 				// Check for Chaining
 				if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D))
@@ -105,6 +108,8 @@ public class Player : MonoBehaviour
 				animator.SetBool("isCrouching", Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D));
 				break;
 		}
+
+		Debug.DrawRay(transform.position, model.transform.TransformDirection(Vector3.forward), Color.red);
 
 		// Handle Looking
 		if (Input.GetKeyDown(keybinds.W))
@@ -140,6 +145,8 @@ public class Player : MonoBehaviour
 		if (repeatJump)
 		{
 			repeatJump = false;
+
+			CheckMovement();
 		}
 		else
 		{
@@ -152,6 +159,20 @@ public class Player : MonoBehaviour
 			{
 				state = PlayerState.Idle;
 			}
+		}
+	}
+
+	// Check for Obstacle
+	void CheckMovement()
+	{
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position, model.transform.TransformDirection(Vector3.forward), out hit, 1))
+		{
+			canMove = hit.transform.CompareTag("Walkable");
+		}
+		else
+		{
+			canMove = true;
 		}
 	}
 

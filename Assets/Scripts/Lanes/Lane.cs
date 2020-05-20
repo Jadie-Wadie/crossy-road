@@ -62,6 +62,16 @@ public abstract class Lane : MonoBehaviour
 
 		rEnd.name = "rEnd";
 		rEnd.transform.localScale = new Vector3(laneWidth, 1, 1);
+
+		// Left Collider
+		BoxCollider lCol = gameObject.AddComponent<BoxCollider>();
+		lCol.center = new Vector3(-laneWidth / 2 - 0.5f, 2, 0);
+		lCol.size = new Vector3(1, 3, 1);
+
+		// Right Collider
+		BoxCollider rCol = gameObject.AddComponent<BoxCollider>();
+		rCol.center = new Vector3(laneWidth / 2 + 0.5f, 2, 0);
+		rCol.size = new Vector3(1, 3, 1);
 	}
 
 	// Set the Lane Variant
@@ -75,20 +85,4 @@ public abstract class Lane : MonoBehaviour
 
 	// Populate Lane
 	public abstract void Populate(Lane prevLane);
-
-	/*
-	switch (prevLane)
-	{
-		case GrassLane grass:
-			Debug.Log("Grass");
-			break;
-
-		case SpawnLane spawn:
-			Debug.Log("Spawn");
-			break;
-
-		default:
-			break;
-	}
-	*/
 }

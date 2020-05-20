@@ -47,7 +47,7 @@ public class GrassLane : Lane
 
 		if (prevLane != null && prevLane.GetType() == typeof(GrassLane))
 		{
-			if (prevLane.objects[laneWidth / 2 - 1] == null && prevLane.objects[laneWidth / 2] == null)
+			if (transform.position.z != 0 && prevLane.objects[laneWidth / 2 - 1] == null && prevLane.objects[laneWidth / 2] == null)
 			{
 				positions.Add(Random.Range(laneWidth / 2 - 1, laneWidth / 2 + 1));
 			}

@@ -506,7 +506,9 @@ MonoBehaviour:
   spawn: {fileID: 5112734177731990834, guid: 495317b3370b94b4783f268db155b6e6, type: 3}
   weights:
   - value: {fileID: 5112734177731990834, guid: 495317b3370b94b4783f268db155b6e6, type: 3}
-    weight: 3
+    weight: 2
+  - value: {fileID: 9190889588842260572, guid: 4e2e540f7fe38814cb13261838f21adc, type: 3}
+    weight: 1
   laneObjects: []
   gameController: {fileID: 0}
   counter: 0
