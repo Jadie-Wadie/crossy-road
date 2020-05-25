@@ -1,6 +1,6 @@
 # TODO
 
-A list of improvements and features for `unity-crossy-road`.
+A list of improvements and features for `unity-crossy-road`
 
 ## Gameplay
 

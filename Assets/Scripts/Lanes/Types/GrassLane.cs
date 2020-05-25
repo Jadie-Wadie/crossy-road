@@ -12,23 +12,13 @@ public class GrassLane : Lane
 	public int obstacleDensity = 90;
 
 	[Header("Obstacles")]
-	public Weight[] weights;
-
-	[HideInInspector]
-	public List<GameObject> obstacles = new List<GameObject>();
+	public Weight[] obstacles;
+	private WeightedList obstacleList;
 
 	new public void Awake()
 	{
+		obstacleList = new WeightedList(obstacles);
 		base.Awake();
-
-		// Calculate Weights
-		for (int i = 0; i < weights.Length; i++)
-		{
-			for (int j = 0; j < weights[i].weight; j++)
-			{
-				obstacles.Add(weights[i].value);
-			}
-		}
 	}
 
 	public override void Populate(Lane prevLane)
@@ -68,7 +58,7 @@ public class GrassLane : Lane
 	// Spawn Obstacle
 	GameObject SpawnObstacle(int position, Transform parent, bool isObject)
 	{
-		GameObject obstacle = Instantiate(obstacles[Random.Range(0, obstacles.Count)], transform.position + new Vector3(0.5f - laneWidth / 2 + position, 0, 0), Quaternion.identity);
+		GameObject obstacle = Instantiate(obstacleList.random, transform.position + new Vector3(0.5f - laneWidth / 2 + position, 0, 0), Quaternion.identity);
 		obstacle.transform.SetParent(parent);
 
 		if (isObject) objects[position] = obstacle;

@@ -65,9 +65,9 @@ MonoBehaviour:
     ends: {fileID: 2100000, guid: 54c0071a70af20641a4c8ad988d5f919, type: 2}
   obstacleCount: 2
   obstacleDensity: 90
-  weights:
-  - value: {fileID: 5893448381599628740, guid: c4b50f5165abc2d49a44cb82ac8d1da8, type: 3}
-    weight: 10
-  - value: {fileID: 307696876683199479, guid: 19ddfa3fc97f5444bb843bf87200a54a, type: 3}
-    weight: 1
-  obstacles: []
+  obstacles:
+  - weight: 10
+    prefab: {fileID: 5893448381599628740, guid: c4b50f5165abc2d49a44cb82ac8d1da8,
+      type: 3}
+  - weight: 1
+    prefab: {fileID: 307696876683199479, guid: 19ddfa3fc97f5444bb843bf87200a54a, type: 3}

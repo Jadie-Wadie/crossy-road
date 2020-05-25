@@ -504,12 +504,13 @@ MonoBehaviour:
   offset: {x: -0.5, y: 0, z: 0}
   laneParent: {fileID: 1527590419}
   spawn: {fileID: 5112734177731990834, guid: 495317b3370b94b4783f268db155b6e6, type: 3}
-  weights:
-  - value: {fileID: 5112734177731990834, guid: 495317b3370b94b4783f268db155b6e6, type: 3}
-    weight: 2
-  - value: {fileID: 9190889588842260572, guid: 4e2e540f7fe38814cb13261838f21adc, type: 3}
-    weight: 1
-  laneObjects: []
+  lanes:
+  - weight: 1
+    prefab: {fileID: 5112734177731990834, guid: 495317b3370b94b4783f268db155b6e6,
+      type: 3}
+  - weight: 1
+    prefab: {fileID: 9190889588842260572, guid: 4e2e540f7fe38814cb13261838f21adc,
+      type: 3}
   gameController: {fileID: 0}
   counter: 0
 --- !u!114 &1372624905
@@ -524,7 +525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb7cea3dacb3f2143aae8b33a63cfad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gamemode: 1
+  gamemode: 0
   playerPrefab: {fileID: 2925789479202780732, guid: f61e350252aa03a43a3defa9803153c6,
     type: 3}
   playerParent: {fileID: 1583189411}

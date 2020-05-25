@@ -2,13 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public struct Weight
-{
-	public GameObject value;
-	public int weight;
-}
-
 [RequireComponent(typeof(GameController))]
 public class WorldGenerator : MonoBehaviour
 {
@@ -26,11 +19,9 @@ public class WorldGenerator : MonoBehaviour
 	[Space(10)]
 
 	public GameObject spawn;
-	public Weight[] weights;
 
-	[Space(10)]
-
-	public List<GameObject> laneObjects = new List<GameObject>();
+	public Weight[] lanes;
+	private WeightedList laneList;
 
 	[Header("Debug")]
 	public GameController gameController;
@@ -41,16 +32,19 @@ public class WorldGenerator : MonoBehaviour
 
 	[Space(10)]
 
-	private List<GameObject> lanes = new List<GameObject>();
+	private List<GameObject> laneObjects = new List<GameObject>();
 	private Lane prevLane;
+
+	void Awake()
+	{
+		laneList = new WeightedList(lanes);
+	}
 
 	void Start()
 	{
 		// Initalise Variables
 		gameController = GetComponent<GameController>();
-
 		counter = -buffer.x;
-		CalculateWeights();
 
 		// Generate Inital Lanes
 		for (int i = -buffer.x; i < buffer.y; i++)
@@ -82,23 +76,11 @@ public class WorldGenerator : MonoBehaviour
 		}
 	}
 
-	// Calculate Lane Type Weightings
-	void CalculateWeights()
-	{
-		for (int i = 0; i < weights.Length; i++)
-		{
-			for (int j = 0; j < weights[i].weight; j++)
-			{
-				lanes.Add(weights[i].value);
-			}
-		}
-	}
-
 	// Spawn Lane
 	void SpawnLane()
 	{
 		// Determine Lane Type
-		GameObject lanePrefab = lanes[Random.Range(0, lanes.Count)];
+		GameObject lanePrefab = laneList.random;
 		if (counter < spawnLength) lanePrefab = spawn;
 
 		// Spawn the Lane
