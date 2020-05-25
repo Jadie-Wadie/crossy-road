@@ -11,7 +11,7 @@ A list of improvements and features for `unity-crossy-road`
 -   [x] Complete the `Grass` lane population
 -   [x] Add player collision
 -   [x] Add `Road` lane with Lines
--   [ ] Add Car spawning
+-   [x] Add Car spawning
 -   [ ] Add Car collision handling
 -   [ ] Add `Water` lane
 -   [ ] Add winning by distance
