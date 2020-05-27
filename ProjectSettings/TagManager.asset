@@ -4,8 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Walkable
   - Not Walkable
+  - Walkable
+  - Vehicle
   layers:
   - Default
   - TransparentFX

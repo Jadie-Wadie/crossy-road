@@ -24,11 +24,11 @@ public class WorldGenerator : MonoBehaviour
 	private WeightedList laneList;
 
 	[Header("Debug")]
-	public GameController gameController;
+	private GameController gameController;
 
 	[Space(10)]
 
-	public int counter = 0;
+	private int counter = 0;
 
 	[Space(10)]
 
@@ -38,15 +38,13 @@ public class WorldGenerator : MonoBehaviour
 	void Awake()
 	{
 		laneList = new WeightedList(lanes);
+		gameController = GetComponent<GameController>();
 	}
 
-	void Start()
+	public void Generate()
 	{
-		// Initalise Variables
-		gameController = GetComponent<GameController>();
 		counter = -buffer.x;
 
-		// Generate Inital Lanes
 		for (int i = -buffer.x; i < buffer.y; i++)
 		{
 			SpawnLane();

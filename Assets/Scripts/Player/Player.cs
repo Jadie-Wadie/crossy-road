@@ -19,10 +19,15 @@ public class Player : MonoBehaviour
 	{
 		Idle,
 		Crouch,
-		Jump
+		Jump,
+		Dead
 	}
 
 	[Header("Control")]
+	public int playerID;
+
+	[Space(10)]
+
 	public GameObject model;
 
 	[Space(10)]
@@ -45,10 +50,15 @@ public class Player : MonoBehaviour
 	public float jumpSpeed;
 	private Animator animator;
 
+	[Header("Debug")]
+	private GameController gameController;
+
 	void Start()
 	{
 		model = transform.Find("Model").gameObject;
 		animator = GetComponent<Animator>();
+
+		gameController = GameObject.Find("GameController").GetComponent<GameController>();
 
 		SpawnCharacter();
 	}
@@ -71,6 +81,7 @@ public class Player : MonoBehaviour
 				// Look
 				model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
 				break;
+
 			case PlayerState.Crouch:
 				// Update Animator
 				animator.SetBool("isCrouching", true);
@@ -90,6 +101,7 @@ public class Player : MonoBehaviour
 				// Look
 				model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
 				break;
+
 			case PlayerState.Jump:
 				// Update Animator
 				animator.SetBool("isCrouching", false);
@@ -106,6 +118,10 @@ public class Player : MonoBehaviour
 
 				// Check for Crouch
 				animator.SetBool("isCrouching", Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D));
+				break;
+
+			case PlayerState.Dead:
+
 				break;
 		}
 
@@ -133,6 +149,7 @@ public class Player : MonoBehaviour
 		}
 	}
 
+	// Jump Animation Complete
 	public void JumpOver()
 	{
 		// Round
@@ -168,7 +185,21 @@ public class Player : MonoBehaviour
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, model.transform.TransformDirection(Vector3.forward), out hit, 1))
 		{
-			canMove = hit.transform.CompareTag("Walkable");
+			switch (hit.transform.tag)
+			{
+				case "Walkable":
+					canMove = true;
+					break;
+
+				case "Not Walkable":
+					canMove = false;
+					break;
+
+				case "Vehicle":
+					state = PlayerState.Dead;
+					gameController.PlayerDied(playerID);
+					break;
+			}
 		}
 		else
 		{
@@ -176,9 +207,9 @@ public class Player : MonoBehaviour
 		}
 	}
 
+	// Spawn a Character Prefab
 	void SpawnCharacter()
 	{
-		// Spawn a Character Prefab
 		int rand = Random.Range(0, models.Length);
 
 		GameObject character = Instantiate(models[rand], transform.position, Quaternion.identity);
