@@ -28,7 +28,6 @@ public class GameController : MonoBehaviour
 	[HideInInspector]
 	public GameObject[] players;
 
-
 	[Header("Camera")]
 
 	public GameObject cameraPrefab;
@@ -42,6 +41,10 @@ public class GameController : MonoBehaviour
 	[Header("UI")]
 	public Button playButton;
 	public Button modeButton;
+
+	[Space(10)]
+
+	public Image black;
 
 	[Space(10)]
 
@@ -65,13 +68,14 @@ public class GameController : MonoBehaviour
 	[Header("Debug")]
 	private WorldGenerator worldGenerator;
 
+	void Awake()
+	{
+		worldGenerator = GetComponent<WorldGenerator>();
+	}
+
 	void Start()
 	{
-		// Generate World
-		worldGenerator = GetComponent<WorldGenerator>();
-		worldGenerator.Generate();
-
-		// Show Menu
+		SetupGame();
 		SetupUI();
 	}
 
@@ -93,6 +97,16 @@ public class GameController : MonoBehaviour
 					break;
 			}
 		}
+	}
+
+	// Setup Game
+	void SetupGame()
+	{
+		// Spawn Players
+		SpawnPlayers();
+
+		// Regenerate World
+		worldGenerator.Generate();
 	}
 
 	// Setup UI
@@ -146,15 +160,30 @@ public class GameController : MonoBehaviour
 	// Toggle Gamemode
 	public void ToggleGamemode()
 	{
+		// Toggle GameMode
 		gamemode = gamemode == Gamemode.Singleplayer ? Gamemode.Multiplayer : Gamemode.Singleplayer;
+
+		// Update UI
 		modeButton.transform.Find("Text").GetComponent<Text>().text = gamemode == Gamemode.Singleplayer ? "1" : "2";
 
-		SetupGame();
+		// Start Animation
+		black.GetComponent<Animator>().SetBool("isVisible", true);
 	}
 
-	// Setup the Game
-	void SetupGame()
+	// Spawn Players
+	void SpawnPlayers()
 	{
+		// Remove Players
+		foreach (Transform child in playerParent.transform)
+		{
+			GameObject.Destroy(child.gameObject);
+		}
+
+		foreach (Transform child in cameraParent.transform)
+		{
+			GameObject.Destroy(child.gameObject);
+		}
+
 		// Validate
 		if (inputs.Length < 2) throw new System.Exception("keybinds[] must have at least 2 entries");
 

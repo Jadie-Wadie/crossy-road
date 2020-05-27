@@ -43,6 +43,14 @@ public class WorldGenerator : MonoBehaviour
 
 	public void Generate()
 	{
+		// Destroy Lanes
+		foreach (GameObject lane in laneObjects.ToArray())
+		{
+			laneObjects.Remove(lane);
+			GameObject.Destroy(lane);
+		}
+
+		// Generate New Lanes
 		counter = -buffer.x;
 
 		for (int i = -buffer.x; i < buffer.y; i++)
