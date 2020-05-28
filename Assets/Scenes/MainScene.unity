@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657975, g: 0.4964143, b: 0.57481766, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657922, g: 0.4964134, b: 0.5748167, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -204,7 +204,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1372624905}
-        m_MethodName: ToggleGamemode
+        m_MethodName: GamemodeButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1441,6 +1441,7 @@ MonoBehaviour:
   playButton: {fileID: 411200050}
   modeButton: {fileID: 200591230}
   black: {fileID: 342491526}
+  fadeLength: 0.16666667
   player1:
     distance: {fileID: 591380135}
     gameOver: {fileID: 846729515}

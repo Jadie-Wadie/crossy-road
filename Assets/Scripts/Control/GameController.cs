@@ -45,6 +45,7 @@ public class GameController : MonoBehaviour
 	[Space(10)]
 
 	public Image black;
+	public float fadeLength;
 
 	[Space(10)]
 
@@ -158,7 +159,12 @@ public class GameController : MonoBehaviour
 	}
 
 	// Toggle Gamemode
-	public void ToggleGamemode()
+	public void GamemodeButton()
+	{
+		StartCoroutine(ToggleGamemode());
+	}
+
+	IEnumerator ToggleGamemode()
 	{
 		// Toggle GameMode
 		gamemode = gamemode == Gamemode.Singleplayer ? Gamemode.Multiplayer : Gamemode.Singleplayer;
@@ -167,7 +173,13 @@ public class GameController : MonoBehaviour
 		modeButton.transform.Find("Text").GetComponent<Text>().text = gamemode == Gamemode.Singleplayer ? "1" : "2";
 
 		// Start Animation
-		black.GetComponent<Animator>().SetBool("isVisible", true);
+		Animator animator = black.GetComponent<Animator>();
+		animator.SetBool("isVisible", true);
+
+		yield return new WaitForSeconds(fadeLength);
+
+		animator.SetBool("isVisible", false);
+		SetupGame();
 	}
 
 	// Spawn Players

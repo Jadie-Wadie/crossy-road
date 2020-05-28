@@ -18,7 +18,7 @@ A list of improvements and features for `unity-crossy-road`
 
 ## User Interface
 
--   [ ] Make a singleplayer / multiplayer selector
+-   [x] Make a singleplayer / multiplayer selector
 -   [ ] Add a play button
 -   [ ] Add a gameover screen
 
