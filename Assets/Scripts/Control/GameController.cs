@@ -169,16 +169,19 @@ public class GameController : MonoBehaviour
 		// Toggle GameMode
 		gamemode = gamemode == Gamemode.Singleplayer ? Gamemode.Multiplayer : Gamemode.Singleplayer;
 
-		// Update UI
-		modeButton.transform.Find("Text").GetComponent<Text>().text = gamemode == Gamemode.Singleplayer ? "1" : "2";
-
 		// Start Animation
 		Animator animator = black.GetComponent<Animator>();
 		animator.SetBool("isVisible", true);
 
 		yield return new WaitForSeconds(fadeLength);
 
+		// Update UI
+		modeButton.transform.Find("Text").GetComponent<Text>().text = gamemode == Gamemode.Singleplayer ? "1" : "2";
+
+		// End Animation
 		animator.SetBool("isVisible", false);
+
+		// Regenerate Game
 		SetupGame();
 	}
 
