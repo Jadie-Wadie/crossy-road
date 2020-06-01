@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
 	}
 
 	[Header("Control")]
+	public bool playing = true;
 	public int playerID;
 
 	[Space(10)]
@@ -66,86 +67,87 @@ public class Player : MonoBehaviour
 	void Update()
 	{
 		// Handle State
-		switch (state)
+		if (playing)
 		{
-			case PlayerState.Idle:
-				// Update Animator
-				animator.SetBool("isCrouching", false);
+			switch (state)
+			{
+				case PlayerState.Idle:
+					// Update Animator
+					animator.SetBool("isCrouching", false);
 
-				// Check for Crouch
-				if (Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D))
-				{
-					state = PlayerState.Crouch;
-				}
-
-				// Look
-				model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
-				break;
-
-			case PlayerState.Crouch:
-				// Update Animator
-				animator.SetBool("isCrouching", true);
-
-				// Check for Jump
-				if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D))
-				{
-					if (!Input.GetKey(keybinds.W) && !Input.GetKey(keybinds.A) && !Input.GetKey(keybinds.S) && !Input.GetKey(keybinds.D))
+					// Check for Crouch
+					if (Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D))
 					{
-						state = PlayerState.Jump;
-						animator.SetTrigger("shouldJump");
-
-						CheckMovement();
+						state = PlayerState.Crouch;
 					}
-				}
 
-				// Look
-				model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
-				break;
+					// Look
+					model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
+					break;
 
-			case PlayerState.Jump:
-				// Update Animator
-				animator.SetBool("isCrouching", false);
+				case PlayerState.Crouch:
+					// Update Animator
+					animator.SetBool("isCrouching", true);
 
-				// Move
-				if (canMove) transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
+					// Check for Jump
+					if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D))
+					{
+						if (!Input.GetKey(keybinds.W) && !Input.GetKey(keybinds.A) && !Input.GetKey(keybinds.S) && !Input.GetKey(keybinds.D))
+						{
+							state = PlayerState.Jump;
+							animator.SetTrigger("shouldJump");
 
-				// Check for Chaining
-				if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D))
-				{
-					repeatJump = true;
-					animator.SetTrigger("shouldJump");
-				}
+							CheckMovement();
+						}
+					}
 
-				// Check for Crouch
-				animator.SetBool("isCrouching", Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D));
-				break;
+					// Look
+					model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
+					break;
 
-			case PlayerState.Dead:
+				case PlayerState.Jump:
+					// Update Animator
+					animator.SetBool("isCrouching", false);
 
-				break;
-		}
+					// Move
+					if (canMove) transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
 
-		Debug.DrawRay(transform.position, model.transform.TransformDirection(Vector3.forward), Color.red);
+					// Check for Chaining
+					if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D))
+					{
+						repeatJump = true;
+						animator.SetTrigger("shouldJump");
+					}
 
-		// Handle Looking
-		if (Input.GetKeyDown(keybinds.W))
-		{
-			direction = 0;
-		}
+					// Check for Crouch
+					animator.SetBool("isCrouching", Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D));
+					break;
 
-		if (Input.GetKey(keybinds.A))
-		{
-			direction = 3;
-		}
+				case PlayerState.Dead:
 
-		if (Input.GetKey(keybinds.S))
-		{
-			direction = 2;
-		}
+					break;
+			}
 
-		if (Input.GetKey(keybinds.D))
-		{
-			direction = 1;
+			// Handle Looking
+			if (Input.GetKeyDown(keybinds.W))
+			{
+				direction = 0;
+			}
+
+			if (Input.GetKey(keybinds.A))
+			{
+				direction = 3;
+			}
+
+			if (Input.GetKey(keybinds.S))
+			{
+				direction = 2;
+			}
+
+			if (Input.GetKey(keybinds.D))
+			{
+				direction = 1;
+			}
 		}
 	}
 
@@ -194,11 +196,6 @@ public class Player : MonoBehaviour
 				case "Not Walkable":
 					canMove = false;
 					break;
-
-				case "Vehicle":
-					state = PlayerState.Dead;
-					gameController.PlayerDied(playerID);
-					break;
 			}
 		}
 		else
@@ -216,5 +213,28 @@ public class Player : MonoBehaviour
 		character.transform.SetParent(model.transform);
 
 		character.transform.localRotation = Quaternion.Euler(0, 90, 0);
+	}
+
+	void OnTriggerEnter(Collider other)
+	{
+		if (playing)
+		{
+			if (other.gameObject.CompareTag("Vehicle"))
+			{
+				if (state == PlayerState.Jump)
+				{
+					Debug.Log("Splat!");
+				}
+				else
+				{
+					animator.SetTrigger("shouldFlat");
+				}
+
+				state = PlayerState.Dead;
+				playing = false;
+
+				StartCoroutine(gameController.PlayerDied(playerID));
+			}
+		}
 	}
 }

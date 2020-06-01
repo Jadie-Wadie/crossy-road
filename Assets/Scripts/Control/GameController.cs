@@ -5,14 +5,19 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-	public enum Gamemode
+	public enum GameState
+	{
+		Menu, Play, Over
+	}
+
+	public enum GameMode
 	{
 		Singleplayer, Multiplayer
 	}
 
 	[Header("Control")]
-	public bool isPlaying = false;
-	public Gamemode gamemode;
+	public GameState gameState;
+	public GameMode gameMode;
 
 	[Space(10)]
 
@@ -27,6 +32,8 @@ public class GameController : MonoBehaviour
 
 	[HideInInspector]
 	public GameObject[] players;
+	[HideInInspector]
+	public GameObject[] cameras;
 
 	[Header("Camera")]
 
@@ -36,11 +43,21 @@ public class GameController : MonoBehaviour
 	[Space(10)]
 
 	public Vector3 cameraOffset = new Vector3(0.75f, 10f, -6f);
-	public GameObject cameraSplit;
 
 	[Header("UI")]
+	public Canvas canvas;
+
+	[Space(10)]
+
+	public GameObject gamePanel;
+	public GameObject menuPanel;
+
+	[Space(10)]
+
 	public Button playButton;
 	public Button modeButton;
+
+	private bool modeEnabled = true;
 
 	[Space(10)]
 
@@ -82,16 +99,16 @@ public class GameController : MonoBehaviour
 
 	void Update()
 	{
-		if (isPlaying)
+		if (gameState == GameState.Play)
 		{
-			switch (gamemode)
+			switch (gameMode)
 			{
-				case Gamemode.Singleplayer:
+				case GameMode.Singleplayer:
 					// Update UI
 					player1.distance.text = Mathf.Max(Mathf.RoundToInt(players[0].transform.position.z), 0).ToString();
 					break;
 
-				case Gamemode.Multiplayer:
+				case GameMode.Multiplayer:
 					// Update UI
 					player1.distance.text = Mathf.Max(Mathf.RoundToInt(players[0].transform.position.z), 0).ToString();
 					player2.distance.text = Mathf.Max(Mathf.RoundToInt(players[1].transform.position.z), 0).ToString();
@@ -113,46 +130,60 @@ public class GameController : MonoBehaviour
 	// Setup UI
 	void SetupUI()
 	{
-		if (isPlaying)
+		switch (gameState)
 		{
-			// Menu
-			playButton.gameObject.SetActive(false);
-			modeButton.gameObject.SetActive(false);
+			case GameState.Menu:
+				menuPanel.SetActive(true);
+				gamePanel.SetActive(false);
+				break;
 
-			// HUD
-			switch (gamemode)
-			{
-				case Gamemode.Singleplayer:
-					player1.distance.enabled = true;
-					player2.distance.enabled = false;
+			case GameState.Play:
+				menuPanel.SetActive(false);
+				gamePanel.SetActive(true);
 
-					highscore.enabled = true;
-					break;
+				switch (gameMode)
+				{
+					case GameMode.Singleplayer:
+						player1.distance.enabled = true;
+						player2.distance.enabled = false;
 
-				case Gamemode.Multiplayer:
-					player1.distance.enabled = true;
-					player2.distance.enabled = true;
+						highscore.enabled = true;
+						break;
 
-					highscore.enabled = false;
-					break;
-			}
+					case GameMode.Multiplayer:
+						player1.distance.enabled = true;
+						player2.distance.enabled = true;
 
-			player1.gameOver.enabled = false;
-			player2.gameOver.enabled = false;
+						highscore.enabled = false;
+						break;
+				}
+
+				player1.gameOver.enabled = false;
+				player2.gameOver.enabled = false;
+				break;
+
+			case GameState.Over:
+				menuPanel.SetActive(true);
+				gamePanel.SetActive(true);
+				break;
 		}
-		else
-		{
-			// Show Menu
-			playButton.gameObject.SetActive(true);
-			modeButton.gameObject.SetActive(true);
-		}
+
+		// Move GameOver Text
+		Rect rect = (canvas.transform as RectTransform).rect;
+		player1.gameOver.transform.position = new Vector3(rect.width * (gameMode == GameMode.Singleplayer ? 0.5f : 0.25f), rect.height * 0.5f, 0);
 	}
 
 	// Start Game
 	public void StartGame()
 	{
 		// Start Playing
-		isPlaying = true;
+		gameState = GameState.Play;
+
+		// Enable Movement
+		foreach (GameObject player in players)
+		{
+			player.GetComponent<Player>().playing = true;
+		}
 
 		// Setup UI
 		SetupUI();
@@ -166,23 +197,33 @@ public class GameController : MonoBehaviour
 
 	IEnumerator ToggleGamemode()
 	{
-		// Toggle GameMode
-		gamemode = gamemode == Gamemode.Singleplayer ? Gamemode.Multiplayer : Gamemode.Singleplayer;
+		// Disable Button
+		if (!modeEnabled) yield break;
+		modeEnabled = false;
 
-		// Start Animation
+		// Toggle
+		gameMode = gameMode == GameMode.Singleplayer ? GameMode.Multiplayer : GameMode.Singleplayer;
+
+		// UI
 		Animator animator = black.GetComponent<Animator>();
 		animator.SetBool("isVisible", true);
 
+		// Delay
 		yield return new WaitForSeconds(fadeLength);
 
-		// Update UI
-		modeButton.transform.Find("Text").GetComponent<Text>().text = gamemode == Gamemode.Singleplayer ? "1" : "2";
-
-		// End Animation
+		// UI
+		modeButton.transform.Find("Text").GetComponent<Text>().text = gameMode == GameMode.Singleplayer ? "1" : "2";
 		animator.SetBool("isVisible", false);
 
 		// Regenerate Game
 		SetupGame();
+		SetupUI();
+
+		// Delay
+		yield return new WaitForSeconds(fadeLength);
+
+		// Enable Button
+		modeEnabled = true;
 	}
 
 	// Spawn Players
@@ -203,29 +244,25 @@ public class GameController : MonoBehaviour
 		if (inputs.Length < 2) throw new System.Exception("keybinds[] must have at least 2 entries");
 
 		// Spawn Players
-		players = new GameObject[gamemode == Gamemode.Singleplayer ? 1 : 2];
-		switch (gamemode)
+		players = new GameObject[gameMode == GameMode.Singleplayer ? 1 : 2];
+		cameras = new GameObject[players.Length];
+
+		switch (gameMode)
 		{
-			case Gamemode.Singleplayer:
+			case GameMode.Singleplayer:
 				// Player
 				players[0] = SpawnPlayer(0, new Vector3(0, 1, 0), inputs[0]);
-				SpawnCamera(players[0], new Rect(0, 0, 1, 1), 35f);
-
-				// Camera Line
-				cameraSplit.SetActive(false);
+				cameras[0] = SpawnCamera(players[0], new Rect(0, 0, 1, 1), 35f);
 				break;
 
-			case Gamemode.Multiplayer:
+			case GameMode.Multiplayer:
 				// Player 1
 				players[0] = SpawnPlayer(0, new Vector3(-1, 1, 0), inputs[0]);
-				SpawnCamera(players[0], new Rect(0, 0, 0.5f, 1), 40f);
+				cameras[0] = SpawnCamera(players[0], new Rect(0, 0, 0.5f, 1), 40f);
 
 				// Player 2
 				players[1] = SpawnPlayer(1, new Vector3(0, 1, 0), inputs[1]);
-				SpawnCamera(players[1], new Rect(0.5f, 0, 0.5f, 1), 40f);
-
-				// Camera Line
-				cameraSplit.SetActive(true);
+				cameras[1] = SpawnCamera(players[1], new Rect(0.5f, 0, 0.5f, 1), 40f);
 				break;
 		}
 
@@ -242,6 +279,8 @@ public class GameController : MonoBehaviour
 		script.keybinds = keybinds;
 		script.playerID = id;
 
+		script.playing = false;
+
 		return player;
 	}
 
@@ -256,42 +295,48 @@ public class GameController : MonoBehaviour
 		cameraScript.target = target;
 		cameraScript.offset = cameraOffset;
 
-		camera.GetComponent<Camera>().rect = rect;
-		camera.GetComponent<Camera>().fieldOfView = fieldOfView;
+		cameraScript.view.GetComponent<Camera>().rect = rect;
+		cameraScript.view.GetComponent<Camera>().fieldOfView = fieldOfView;
 
 		return camera;
 	}
 
 	// Player Died
-	public void PlayerDied(int player)
+	public IEnumerator PlayerDied(int player)
 	{
 		if (player == 0)
 		{
-			player1.gameOver.enabled = true;
 			player1.gameOver.text = player1.distance.text;
+			player1.gameOver.enabled = true;
 		}
 
 		if (player == 1)
 		{
-			player2.gameOver.enabled = true;
 			player2.gameOver.text = player2.distance.text;
+			player2.gameOver.enabled = true;
 		}
 
 		if (--alivePlayers == 0) GameOver();
+
+		cameras[player].GetComponent<CameraController>().shake = true;
+
+		yield return new WaitForSeconds(0.25f);
+
+		cameras[player].GetComponent<CameraController>().shake = false;
 	}
 
 	// Game Over
 	void GameOver()
 	{
-		Debug.Log("Game Over");
+		gameState = GameState.Over;
 
-		switch (gamemode)
+		switch (gameMode)
 		{
-			case Gamemode.Singleplayer:
+			case GameMode.Singleplayer:
 				// Save Highscore
 				break;
 
-			case Gamemode.Multiplayer:
+			case GameMode.Multiplayer:
 				// Show winner
 				break;
 		}

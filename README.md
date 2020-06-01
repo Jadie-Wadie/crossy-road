@@ -19,8 +19,9 @@ A list of improvements and features for `crossy-road-client`
 ## User Interface
 
 -   [x] Make a singleplayer / multiplayer selector
--   [ ] Add a play button
+-   [x] Add a play button
 -   [ ] Add a gameover screen
+-   [x] Add camera shake on death
 
 ## Other
 
