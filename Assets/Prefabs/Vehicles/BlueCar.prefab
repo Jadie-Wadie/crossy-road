@@ -88,6 +88,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8988415857233840881}
   - component: {fileID: 4617349659697834995}
+  - component: {fileID: 4498499724667643892}
+  - component: {fileID: 1577130913469421573}
   - component: {fileID: 8983600705902671838}
   m_Layer: 0
   m_Name: BlueCar
@@ -122,8 +124,34 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 0.9}
+  m_Size: {x: 0.9, y: 1, z: 0.5}
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!65 &4498499724667643892
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5397033371018705122}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 1, z: 0.1}
+  m_Center: {x: -0.2, y: 1, z: -0.3}
+--- !u!65 &1577130913469421573
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5397033371018705122}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 1, z: 0.1}
+  m_Center: {x: -0.2, y: 1, z: 0.3}
 --- !u!114 &8983600705902671838
 MonoBehaviour:
   m_ObjectHideFlags: 0

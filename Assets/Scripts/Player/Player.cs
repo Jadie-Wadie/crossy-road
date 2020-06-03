@@ -41,6 +41,12 @@ public class Player : MonoBehaviour
 	public int direction = 0;
 	public bool canMove = true;
 
+	[Space(10)]
+
+	public bool isSticking = false;
+	public GameObject stickObject;
+	public Vector3 stickPos;
+
 	[Header("Input")]
 	public Keybinds keybinds;
 
@@ -122,10 +128,6 @@ public class Player : MonoBehaviour
 					// Check for Crouch
 					animator.SetBool("isCrouching", Input.GetKey(keybinds.W) || Input.GetKey(keybinds.A) || Input.GetKey(keybinds.S) || Input.GetKey(keybinds.D));
 					break;
-
-				case PlayerState.Dead:
-
-					break;
 			}
 
 			// Handle Looking
@@ -149,34 +151,55 @@ public class Player : MonoBehaviour
 				direction = 1;
 			}
 		}
+		else
+		{
+			// Dead
+			if (state == PlayerState.Dead)
+			{
+				// Stick to the Vehicle
+				if (isSticking)
+				{
+					transform.rotation = Quaternion.Euler(0, direction * 90, 0);
+					model.transform.localRotation = Quaternion.Euler(0, 0, 0);
+
+					if (stickObject != null) transform.position = stickObject.transform.position + stickPos;
+
+					Debug.DrawLine(transform.position, transform.position - new Vector3(stickPos.x, 0, stickPos.z).normalized);
+				}
+
+			}
+		}
 	}
 
 	// Jump Animation Complete
 	public void JumpOver()
 	{
-		// Round
-		transform.position = new Vector3((float)Math.Round(transform.position.x), 1, (float)Math.Round(transform.position.z));
-
-		// Look
-		model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
-
-		// Repeat Jump
-		if (repeatJump)
+		if (state != PlayerState.Dead)
 		{
-			repeatJump = false;
+			// Round
+			transform.position = new Vector3((float)Math.Round(transform.position.x), 1, (float)Math.Round(transform.position.z));
 
-			CheckMovement();
-		}
-		else
-		{
-			// Check for Crouch
-			if (animator.GetBool("isCrouching"))
+			// Look
+			model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
+
+			// Repeat Jump
+			if (repeatJump)
 			{
-				state = PlayerState.Crouch;
+				repeatJump = false;
+
+				CheckMovement();
 			}
 			else
 			{
-				state = PlayerState.Idle;
+				// Check for Crouch
+				if (animator.GetBool("isCrouching"))
+				{
+					state = PlayerState.Crouch;
+				}
+				else
+				{
+					state = PlayerState.Idle;
+				}
 			}
 		}
 	}
@@ -190,6 +213,7 @@ public class Player : MonoBehaviour
 			switch (hit.transform.tag)
 			{
 				case "Walkable":
+				case "Vehicle":
 					canMove = true;
 					break;
 
@@ -223,7 +247,21 @@ public class Player : MonoBehaviour
 			{
 				if (state == PlayerState.Jump)
 				{
-					Debug.Log("Splat!");
+					stickPos = transform.position - other.gameObject.transform.position;
+
+					Vector2 norm = new Vector2(stickPos.x, stickPos.y).normalized;
+					float angle = Vector2.Angle(Vector2.up, norm);
+
+					if (35f < angle && angle < 135f)
+					{
+						animator.SetTrigger("shouldFlat");
+					}
+					else
+					{
+						isSticking = true;
+						animator.SetTrigger("shouldSplat");
+						stickObject = other.gameObject;
+					}
 				}
 				else
 				{

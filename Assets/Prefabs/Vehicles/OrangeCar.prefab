@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1671953448214399063}
   - component: {fileID: 3651163491779973590}
+  - component: {fileID: 4204022247825120921}
+  - component: {fileID: 9177642780649109097}
   - component: {fileID: 4174541844347309526}
   m_Layer: 0
   m_Name: OrangeCar
@@ -44,8 +46,34 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.4, y: 1, z: 0.9}
+  m_Size: {x: 1.4, y: 1, z: 0.7}
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!65 &4204022247825120921
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2407351114247305796}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.2, y: 1, z: 0.1}
+  m_Center: {x: -0.1, y: 1, z: -0.4}
+--- !u!65 &9177642780649109097
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2407351114247305796}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.2, y: 1, z: 0.1}
+  m_Center: {x: -0.1, y: 1, z: 0.4}
 --- !u!114 &4174541844347309526
 MonoBehaviour:
   m_ObjectHideFlags: 0

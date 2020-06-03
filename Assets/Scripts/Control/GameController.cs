@@ -23,6 +23,10 @@ public class GameController : MonoBehaviour
 
 	public int alivePlayers;
 
+	[Space(10)]
+
+	public int highScore = 0;
+
 	[Header("Player")]
 
 	public GameObject playerPrefab;
@@ -71,13 +75,14 @@ public class GameController : MonoBehaviour
 
 	[Space(10)]
 
-	public Text highscore;
+	public Text highScoreText;
 
 	[System.Serializable]
 	public struct PlayerUI
 	{
 		public Text distance;
 		public Text gameOver;
+		public Image crown;
 	}
 
 	[Header("Input")]
@@ -89,6 +94,7 @@ public class GameController : MonoBehaviour
 	void Awake()
 	{
 		worldGenerator = GetComponent<WorldGenerator>();
+		highScore = PlayerPrefs.GetInt("highscore", 0);
 	}
 
 	void Start()
@@ -105,7 +111,11 @@ public class GameController : MonoBehaviour
 			{
 				case GameMode.Singleplayer:
 					// Update UI
-					player1.distance.text = Mathf.Max(Mathf.RoundToInt(players[0].transform.position.z), 0).ToString();
+					int distance = Mathf.Max(Mathf.RoundToInt(players[0].transform.position.z), 0);
+					player1.distance.text = distance.ToString();
+
+					highScore = Mathf.Max(distance, highScore);
+					highScoreText.text = highScore.ToString();
 					break;
 
 				case GameMode.Multiplayer:
@@ -115,6 +125,12 @@ public class GameController : MonoBehaviour
 					break;
 			}
 		}
+	}
+
+	void FixedUpdate()
+	{
+		PlayerPrefs.SetInt("highscore", highScore);
+		PlayerPrefs.Save();
 	}
 
 	// Setup Game
@@ -147,19 +163,22 @@ public class GameController : MonoBehaviour
 						player1.distance.enabled = true;
 						player2.distance.enabled = false;
 
-						highscore.enabled = true;
+						highScoreText.enabled = true;
 						break;
 
 					case GameMode.Multiplayer:
 						player1.distance.enabled = true;
 						player2.distance.enabled = true;
 
-						highscore.enabled = false;
+						highScoreText.enabled = false;
 						break;
 				}
 
 				player1.gameOver.enabled = false;
 				player2.gameOver.enabled = false;
+
+				player1.crown.enabled = false;
+				player2.crown.enabled = false;
 				break;
 
 			case GameState.Over:
@@ -173,28 +192,63 @@ public class GameController : MonoBehaviour
 		player1.gameOver.transform.position = new Vector3(rect.width * (gameMode == GameMode.Singleplayer ? 0.5f : 0.25f), rect.height * 0.5f, 0);
 	}
 
-	// Start Game
-	public void StartGame()
+	// Play Button
+	public void PlayButton()
 	{
-		// Start Playing
-		gameState = GameState.Play;
-
-		// Enable Movement
-		foreach (GameObject player in players)
-		{
-			player.GetComponent<Player>().playing = true;
-		}
-
-		// Setup UI
-		SetupUI();
+		StartCoroutine(StartGame());
 	}
 
-	// Toggle Gamemode
-	public void GamemodeButton()
+	// Start Game
+	IEnumerator StartGame()
+	{
+		if (gameState == GameState.Menu)
+		{
+			// Start Playing
+			gameState = GameState.Play;
+
+			// Enable Movement
+			foreach (GameObject player in players)
+			{
+				player.GetComponent<Player>().playing = true;
+			}
+
+			// Setup UI
+			SetupUI();
+		}
+		else
+		{
+			// UI
+			Animator animator = black.GetComponent<Animator>();
+			animator.SetBool("isVisible", true);
+
+			// Delay
+			yield return new WaitForSeconds(fadeLength);
+
+			// State
+			gameState = GameState.Play;
+
+			// Regenerate Game
+			SetupGame();
+			SetupUI();
+
+			// Enable Movement
+			foreach (GameObject player in players)
+			{
+				player.GetComponent<Player>().playing = true;
+			}
+
+			// UI
+			animator.SetBool("isVisible", false);
+		}
+	}
+
+	// Game Mode Button
+	public void GameModeButton()
 	{
 		StartCoroutine(ToggleGamemode());
 	}
 
+	// Toggle Game Mode
 	IEnumerator ToggleGamemode()
 	{
 		// Disable Button
@@ -203,6 +257,7 @@ public class GameController : MonoBehaviour
 
 		// Toggle
 		gameMode = gameMode == GameMode.Singleplayer ? GameMode.Multiplayer : GameMode.Singleplayer;
+		gameState = GameState.Menu;
 
 		// UI
 		Animator animator = black.GetComponent<Animator>();
@@ -330,15 +385,25 @@ public class GameController : MonoBehaviour
 	{
 		gameState = GameState.Over;
 
-		switch (gameMode)
+		// Show Multiplayer Winner
+		if (gameMode == GameMode.Multiplayer)
 		{
-			case GameMode.Singleplayer:
-				// Save Highscore
-				break;
-
-			case GameMode.Multiplayer:
-				// Show winner
-				break;
+			// Draw
+			if (int.Parse(player1.gameOver.text) == int.Parse(player2.gameOver.text))
+			{
+				player1.crown.enabled = true;
+				player2.crown.enabled = true;
+			}
+			else if (int.Parse(player1.gameOver.text) > int.Parse(player2.gameOver.text))
+			{
+				player1.crown.enabled = true;
+				player2.crown.enabled = false;
+			}
+			else
+			{
+				player1.crown.enabled = false;
+				player2.crown.enabled = true;
+			}
 		}
 
 		// Show Menu

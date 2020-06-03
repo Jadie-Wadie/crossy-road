@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: -1686414537681788062}
   - component: {fileID: 2925789479202780734}
   - component: {fileID: 2925789479202780735}
-  - component: {fileID: -3215919703861646519}
+  - component: {fileID: -488293273426272975}
   m_Layer: 0
   m_Name: Player
   m_TagString: Walkable
@@ -116,6 +116,9 @@ MonoBehaviour:
   repeatJump: 0
   direction: 0
   canMove: 1
+  isSticking: 0
+  stickObject: {fileID: 0}
+  stickPos: {x: 0, y: 0, z: 0}
   keybinds:
     W: 0
     A: 0
@@ -124,7 +127,7 @@ MonoBehaviour:
   models:
   - {fileID: 560467690882499237, guid: e93da06ad7960aa42b4010a16868590c, type: 3}
   jumpSpeed: 0
---- !u!54 &-3215919703861646519
+--- !u!54 &-488293273426272975
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,4 +142,4 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3

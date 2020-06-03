@@ -4,23 +4,31 @@ A list of improvements and features for `crossy-road-client`
 
 ## Gameplay
 
--   [x] Add 2nd player controls
 -   [x] Add camera generation
 -   [x] Make camera follow player
 -   [x] Add infinite generation
 -   [x] Complete the `Grass` lane population
 -   [x] Add player collision
 -   [x] Add `Road` lane with Lines
--   [x] Add Car spawning
--   [ ] Add Car collision handling
+-   [x] Add Vehicle spawning
+-   [x] Add Vehicle collision handling
 -   [ ] Add `Water` lane
+
+### Singleplayer
+
+-   [x] Add highscore
+
+### Multiplayer
+
+-   [x] Add 2nd player controls
+-   [x] Add winner detection
 -   [ ] Add winning by distance
 
 ## User Interface
 
 -   [x] Make a singleplayer / multiplayer selector
 -   [x] Add a play button
--   [ ] Add a gameover screen
+-   [x] Add a gameover screen
 -   [x] Add camera shake on death
 
 ## Other
