@@ -12,7 +12,8 @@ A list of improvements and features for `crossy-road-client`
 -   [x] Add `Road` lane with Lines
 -   [x] Add Vehicle spawning
 -   [x] Add Vehicle collision handling
--   [ ] Add `Water` lane
+-   [x] Add `Water` lane generation
+-   [ ] Add `Water` lane interaction
 
 ### Singleplayer
 

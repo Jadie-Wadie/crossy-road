@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Vehicle : MonoBehaviour
+public class Translate : MonoBehaviour
 {
 	[Header("Control")]
 	public float speed = 3f;

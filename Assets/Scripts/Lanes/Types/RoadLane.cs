@@ -69,7 +69,7 @@ public class RoadLane : Lane
 		vehicle.transform.parent = main.transform;
 
 		// Configure
-		Vehicle script = vehicle.GetComponent<Vehicle>();
+		Translate script = vehicle.GetComponent<Translate>();
 		script.speed = speed;
 
 		return vehicle;

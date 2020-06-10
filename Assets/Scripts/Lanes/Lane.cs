@@ -12,7 +12,7 @@ public abstract class Lane : MonoBehaviour
 	}
 
 	[Header("Control")]
-	public static int laneWidth = 8;
+	protected static int laneWidth = 8;
 
 	[Header("GameObjects")]
 	public GameObject cube;

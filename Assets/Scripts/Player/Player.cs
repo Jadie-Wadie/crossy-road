@@ -131,25 +131,10 @@ public class Player : MonoBehaviour
 			}
 
 			// Handle Looking
-			if (Input.GetKeyDown(keybinds.W))
-			{
-				direction = 0;
-			}
-
-			if (Input.GetKey(keybinds.A))
-			{
-				direction = 3;
-			}
-
-			if (Input.GetKey(keybinds.S))
-			{
-				direction = 2;
-			}
-
-			if (Input.GetKey(keybinds.D))
-			{
-				direction = 1;
-			}
+			if (Input.GetKey(keybinds.W)) direction = 0;
+			if (Input.GetKey(keybinds.A)) direction = 3;
+			if (Input.GetKey(keybinds.S)) direction = 2;
+			if (Input.GetKey(keybinds.D)) direction = 1;
 		}
 		else
 		{
@@ -176,30 +161,20 @@ public class Player : MonoBehaviour
 	{
 		if (state != PlayerState.Dead)
 		{
-			// Round
+			// Round Position and Update Direction
 			transform.position = new Vector3((float)Math.Round(transform.position.x), 1, (float)Math.Round(transform.position.z));
-
-			// Look
 			model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
 
 			// Repeat Jump
 			if (repeatJump)
 			{
 				repeatJump = false;
-
 				CheckMovement();
 			}
 			else
 			{
 				// Check for Crouch
-				if (animator.GetBool("isCrouching"))
-				{
-					state = PlayerState.Crouch;
-				}
-				else
-				{
-					state = PlayerState.Idle;
-				}
+				state = animator.GetBool("isCrouching") ? PlayerState.Crouch : PlayerState.Idle;
 			}
 		}
 	}
