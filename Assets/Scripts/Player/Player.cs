@@ -36,6 +36,8 @@ public class Player : MonoBehaviour
 	public PlayerState state = PlayerState.Idle;
 	public bool repeatJump = false;
 
+	public float jumpX = 0f;
+
 	[Space(10)]
 
 	public int direction = 0;
@@ -87,6 +89,12 @@ public class Player : MonoBehaviour
 						state = PlayerState.Crouch;
 					}
 
+					// Stick to Log
+					if (isSticking && stickObject != null)
+					{
+						transform.position = stickObject.transform.position + stickPos;
+					}
+
 					// Look
 					model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
 					break;
@@ -107,6 +115,12 @@ public class Player : MonoBehaviour
 						}
 					}
 
+					// Stick to Log
+					if (isSticking && stickObject != null)
+					{
+						transform.position = stickObject.transform.position + stickPos;
+					}
+
 					// Look
 					model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
 					break;
@@ -116,7 +130,16 @@ public class Player : MonoBehaviour
 					animator.SetBool("isCrouching", false);
 
 					// Move
-					if (canMove) transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
+					if (canMove)
+					{
+						transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
+
+						// Round to Tile
+						if (direction == 0 || direction == 2)
+						{
+							transform.Translate(model.transform.right * (jumpX / jumpSpeed) * Time.deltaTime);
+						}
+					}
 
 					// Check for Chaining
 					if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D))
@@ -148,33 +171,59 @@ public class Player : MonoBehaviour
 					model.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
 					if (stickObject != null) transform.position = stickObject.transform.position + stickPos;
-
-					Debug.DrawLine(transform.position, transform.position - new Vector3(stickPos.x, 0, stickPos.z).normalized);
 				}
 
 			}
 		}
+
+		Vector3 offset = new Vector3(0, 0, direction == 0 ? 1 : -1);
+		Debug.DrawRay(transform.position + offset, Vector3.down, Color.red);
 	}
 
 	// Jump Animation Complete
 	public void JumpOver()
 	{
-		if (state != PlayerState.Dead)
+		// Check for Water
+		RaycastHit hit;
+		if (!Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f))
 		{
-			// Round Position and Update Direction
-			transform.position = new Vector3((float)Math.Round(transform.position.x), 1, (float)Math.Round(transform.position.z));
-			model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
+			animator.SetTrigger("shouldSplash");
 
-			// Repeat Jump
-			if (repeatJump)
+			state = PlayerState.Dead;
+			playing = false;
+
+			StartCoroutine(gameController.PlayerDied(playerID));
+		}
+		else
+		{
+			if (state != PlayerState.Dead)
 			{
-				repeatJump = false;
-				CheckMovement();
-			}
-			else
-			{
-				// Check for Crouch
-				state = animator.GetBool("isCrouching") ? PlayerState.Crouch : PlayerState.Idle;
+				// Check for Log
+				if (hit.collider.gameObject.CompareTag("Log"))
+				{
+					isSticking = true;
+					stickObject = hit.collider.gameObject;
+
+					stickPos = transform.position - stickObject.transform.position;
+				}
+				else
+				{
+					// Round Position and Update Direction
+					transform.position = new Vector3((float)Math.Round(transform.position.x), 1, (float)Math.Round(transform.position.z));
+					model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
+				}
+
+				// Repeat Jump
+				if (repeatJump)
+				{
+					repeatJump = false;
+					CheckMovement();
+				}
+				else
+				{
+					// Check for Crouch
+					state = animator.GetBool("isCrouching") ? PlayerState.Crouch : PlayerState.Idle;
+				}
 			}
 		}
 	}
@@ -200,6 +249,22 @@ public class Player : MonoBehaviour
 		else
 		{
 			canMove = true;
+		}
+
+		// Detach from Logs
+		if (canMove) isSticking = false;
+
+		// Check for Rounding
+		jumpX = (float)Math.Round(transform.position.x) - transform.position.x;
+		if (direction == 0 || direction == 2)
+		{
+			if (Physics.Raycast(transform.position + new Vector3(0, 0, direction == 0 ? 1 : -1), Vector3.down, out hit, 1))
+			{
+				if (hit.collider.gameObject.CompareTag("Water") || hit.collider.gameObject.CompareTag("Log"))
+				{
+					jumpX = 0;
+				}
+			}
 		}
 	}
 
@@ -243,6 +308,14 @@ public class Player : MonoBehaviour
 					animator.SetTrigger("shouldFlat");
 				}
 
+				state = PlayerState.Dead;
+				playing = false;
+
+				StartCoroutine(gameController.PlayerDied(playerID));
+			}
+
+			if (other.gameObject.CompareTag("Not Walkable") && isSticking)
+			{
 				state = PlayerState.Dead;
 				playing = false;
 

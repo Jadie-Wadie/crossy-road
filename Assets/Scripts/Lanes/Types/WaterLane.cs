@@ -59,6 +59,9 @@ public class WaterLane : Lane
 			position += Random.Range(spawnRate.x, spawnRate.y) * speed;
 		}
 
+		// Tag Main
+		main.tag = "Water";
+
 		// Spawning Cycle
 		StartCoroutine(SpawnCycle());
 	}

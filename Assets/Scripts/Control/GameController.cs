@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -77,6 +78,13 @@ public class GameController : MonoBehaviour
 
 	public Text highScoreText;
 
+	[Space(10)]
+
+	public Text frameText;
+
+	private float frameTime = 0f;
+	private List<float> frameTimes = new List<float>();
+
 	[System.Serializable]
 	public struct PlayerUI
 	{
@@ -124,6 +132,17 @@ public class GameController : MonoBehaviour
 					player2.distance.text = Mathf.Max(Mathf.RoundToInt(players[1].transform.position.z), 0).ToString();
 					break;
 			}
+		}
+
+		// Show FPS
+		frameTimes.Add(Time.deltaTime);
+
+		if (frameTime < Time.time - 0.25f)
+		{
+			frameText.text = $"{Mathf.RoundToInt(1f / frameTimes.Average()).ToString().PadLeft(3, '0')}";
+
+			frameTimes = new List<float>();
+			frameTime = Time.time;
 		}
 	}
 
@@ -190,6 +209,9 @@ public class GameController : MonoBehaviour
 		// Move GameOver Text
 		Rect rect = (canvas.transform as RectTransform).rect;
 		player1.gameOver.transform.position = new Vector3(rect.width * (gameMode == GameMode.Singleplayer ? 0.5f : 0.25f), rect.height * 0.5f, 0);
+
+		// Gamemode Button Text
+		modeButton.transform.Find("Text").GetComponent<Text>().text = gameMode == GameMode.Singleplayer ? "1" : "2";
 	}
 
 	// Play Button
@@ -267,7 +289,6 @@ public class GameController : MonoBehaviour
 		yield return new WaitForSeconds(fadeLength);
 
 		// UI
-		modeButton.transform.Find("Text").GetComponent<Text>().text = gameMode == GameMode.Singleplayer ? "1" : "2";
 		animator.SetBool("isVisible", false);
 
 		// Regenerate Game

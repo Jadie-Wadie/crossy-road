@@ -59,10 +59,10 @@ MonoBehaviour:
   variants:
   - main: {fileID: 2100000, guid: 58b6f73f85a42694c86c0a7dcaa6d5aa, type: 2}
     ends: {fileID: 2100000, guid: 856e55f2403274b49b79b64a42b4059e, type: 2}
-  speedRange: {x: 2.75, y: 3.25}
-  spawnRate: {x: 1, y: 2}
+  speedRange: {x: 1.75, y: 2.25}
+  spawnRate: {x: 1.5, y: 2}
   logs:
-  - weight: 1
+  - weight: 0
     prefab: {fileID: 2602655508776622190, guid: 81be464412e6f1b4d85e5c14846d7405,
       type: 3}
   - weight: 2
