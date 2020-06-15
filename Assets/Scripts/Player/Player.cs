@@ -158,6 +158,20 @@ public class Player : MonoBehaviour
 			if (Input.GetKey(keybinds.A)) direction = 3;
 			if (Input.GetKey(keybinds.S)) direction = 2;
 			if (Input.GetKey(keybinds.D)) direction = 1;
+
+			// Detect Log Edge Deaths
+			if (isSticking)
+			{
+				Translate script = stickObject.GetComponent<Translate>();
+
+				if (script != null && script.boosting)
+				{
+					state = PlayerState.Dead;
+					playing = false;
+
+					StartCoroutine(gameController.PlayerDied(playerID));
+				}
+			}
 		}
 		else
 		{
@@ -242,7 +256,7 @@ public class Player : MonoBehaviour
 					break;
 
 				case "Not Walkable":
-					canMove = false;
+					canMove = isSticking;
 					break;
 			}
 		}
@@ -308,14 +322,6 @@ public class Player : MonoBehaviour
 					animator.SetTrigger("shouldFlat");
 				}
 
-				state = PlayerState.Dead;
-				playing = false;
-
-				StartCoroutine(gameController.PlayerDied(playerID));
-			}
-
-			if (other.gameObject.CompareTag("Not Walkable") && isSticking)
-			{
 				state = PlayerState.Dead;
 				playing = false;
 

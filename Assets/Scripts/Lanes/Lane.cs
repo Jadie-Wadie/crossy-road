@@ -66,12 +66,12 @@ public abstract class Lane : MonoBehaviour
 		// Left Collider
 		BoxCollider lCol = gameObject.AddComponent<BoxCollider>();
 		lCol.center = new Vector3(-laneWidth / 2 - 0.5f, 2, 0);
-		lCol.size = new Vector3(1, 3, 1);
+		lCol.size = new Vector3(1, 4, 1);
 
 		// Right Collider
 		BoxCollider rCol = gameObject.AddComponent<BoxCollider>();
 		rCol.center = new Vector3(laneWidth / 2 + 0.5f, 2, 0);
-		rCol.size = new Vector3(1, 3, 1);
+		rCol.size = new Vector3(1, 4, 1);
 	}
 
 	// Set the Lane Variant

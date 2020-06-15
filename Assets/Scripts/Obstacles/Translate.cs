@@ -6,6 +6,11 @@ public class Translate : MonoBehaviour
 {
 	[Header("Control")]
 	public float speed = 3f;
+	public float boost = 0f;
+
+	[Space(10)]
+
+	public bool boosting = true;
 
 	void Start()
 	{
@@ -14,6 +19,14 @@ public class Translate : MonoBehaviour
 
 	void Update()
 	{
-		transform.Translate(new Vector3(speed * Time.deltaTime, 0, 0), Space.World);
+		transform.Translate(new Vector3((speed + (boosting ? boost * (speed < 0 ? -1 : 1) : 0)) * Time.deltaTime, 0, 0), Space.World);
+	}
+
+	void OnCollisionEnter(Collision collision)
+	{
+		if (collision.gameObject.CompareTag("Not Walkable"))
+		{
+			boosting = !boosting;
+		}
 	}
 }
