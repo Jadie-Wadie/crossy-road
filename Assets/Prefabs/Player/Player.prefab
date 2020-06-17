@@ -114,6 +114,7 @@ MonoBehaviour:
   model: {fileID: 0}
   state: 0
   repeatJump: 0
+  jumpX: 0
   direction: 0
   canMove: 1
   isSticking: 0
@@ -126,7 +127,7 @@ MonoBehaviour:
     D: 0
   models:
   - {fileID: 560467690882499237, guid: e93da06ad7960aa42b4010a16868590c, type: 3}
-  jumpSpeed: 0
+  jumpSpeed: 0.25
 --- !u!54 &-488293273426272975
 Rigidbody:
   m_ObjectHideFlags: 0

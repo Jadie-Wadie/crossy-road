@@ -56,7 +56,7 @@ public class Player : MonoBehaviour
 	public GameObject[] models;
 
 	[Header("Animation")]
-	public float jumpSpeed;
+	public float jumpSpeed = 0.25f;
 	private Animator animator;
 
 	[Header("Debug")]
@@ -108,10 +108,19 @@ public class Player : MonoBehaviour
 					{
 						if (!Input.GetKey(keybinds.W) && !Input.GetKey(keybinds.A) && !Input.GetKey(keybinds.S) && !Input.GetKey(keybinds.D))
 						{
-							state = PlayerState.Jump;
-							animator.SetTrigger("shouldJump");
-
 							CheckMovement();
+
+							if (canMove)
+							{
+								state = PlayerState.Jump;
+								animator.SetTrigger("shouldJump");
+
+								StartJump();
+							}
+							else
+							{
+								state = PlayerState.Idle;
+							}
 						}
 					}
 
@@ -130,15 +139,12 @@ public class Player : MonoBehaviour
 					animator.SetBool("isCrouching", false);
 
 					// Move
-					if (canMove)
-					{
-						transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
+					transform.Translate(model.transform.forward * (1 / jumpSpeed) * Time.deltaTime);
 
-						// Round to Tile
-						if (direction == 0 || direction == 2)
-						{
-							transform.Translate(model.transform.right * (jumpX / jumpSpeed) * Time.deltaTime);
-						}
+					// Strafe to Tile
+					if (direction == 0 || direction == 2)
+					{
+						transform.Translate(model.transform.right * (jumpX / jumpSpeed) * Time.deltaTime);
 					}
 
 					// Check for Chaining
@@ -190,8 +196,7 @@ public class Player : MonoBehaviour
 			}
 		}
 
-		Vector3 offset = new Vector3(0, 0, direction == 0 ? 1 : -1);
-		Debug.DrawRay(transform.position + offset, Vector3.down, Color.red);
+		Debug.DrawRay(Vector3Int.RoundToInt(transform.position), model.transform.TransformDirection(Vector3.forward), Color.red);
 	}
 
 	// Jump Animation Complete
@@ -224,14 +229,26 @@ public class Player : MonoBehaviour
 				{
 					// Round Position and Update Direction
 					transform.position = new Vector3((float)Math.Round(transform.position.x), 1, (float)Math.Round(transform.position.z));
-					model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
 				}
+
+				model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
 
 				// Repeat Jump
 				if (repeatJump)
 				{
 					repeatJump = false;
+
 					CheckMovement();
+
+					if (canMove)
+					{
+						StartJump();
+					}
+					else
+					{
+						animator.ResetTrigger("shouldJump");
+						state = PlayerState.Idle;
+					}
 				}
 				else
 				{
@@ -243,10 +260,51 @@ public class Player : MonoBehaviour
 	}
 
 	// Check for Obstacle
+	void StartJump()
+	{
+		// Detach from Logs
+		if (canMove) isSticking = false;
+
+		// Check for Rounding
+		jumpX = (float)Math.Round(transform.position.x) - transform.position.x;
+		if (direction == 0 || direction == 2)
+		{
+			RaycastHit hit;
+			if (Physics.Raycast(transform.position + new Vector3(0, 0, direction == 0 ? 1 : -1), Vector3.down, out hit, 1))
+			{
+				if (hit.collider.gameObject.CompareTag("Water") || hit.collider.gameObject.CompareTag("Log"))
+				{
+					jumpX = 0;
+				}
+			}
+		}
+
+		// End of Jump
+		Invoke("JumpOver", jumpSpeed);
+	}
+
+	// Check Movement
 	void CheckMovement()
 	{
+		Vector3 forward = Vector3.forward;
+		switch (direction)
+		{
+			case 0:
+				forward = Vector3.forward;
+				break;
+			case 3:
+				forward = Vector3.left;
+				break;
+			case 2:
+				forward = Vector3.back;
+				break;
+			case 1:
+				forward = Vector3.right;
+				break;
+		}
+
 		RaycastHit hit;
-		if (Physics.Raycast(transform.position, model.transform.TransformDirection(Vector3.forward), out hit, 1))
+		if (Physics.Raycast(Vector3Int.RoundToInt(transform.position), forward, out hit, 1))
 		{
 			switch (hit.transform.tag)
 			{
@@ -256,7 +314,7 @@ public class Player : MonoBehaviour
 					break;
 
 				case "Not Walkable":
-					canMove = isSticking;
+					canMove = false;
 					break;
 			}
 		}
@@ -264,22 +322,7 @@ public class Player : MonoBehaviour
 		{
 			canMove = true;
 		}
-
-		// Detach from Logs
-		if (canMove) isSticking = false;
-
-		// Check for Rounding
-		jumpX = (float)Math.Round(transform.position.x) - transform.position.x;
-		if (direction == 0 || direction == 2)
-		{
-			if (Physics.Raycast(transform.position + new Vector3(0, 0, direction == 0 ? 1 : -1), Vector3.down, out hit, 1))
-			{
-				if (hit.collider.gameObject.CompareTag("Water") || hit.collider.gameObject.CompareTag("Log"))
-				{
-					jumpX = 0;
-				}
-			}
-		}
+		animator.SetBool("canMove", canMove);
 	}
 
 	// Spawn a Character Prefab

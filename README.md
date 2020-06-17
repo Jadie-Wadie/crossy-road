@@ -14,6 +14,7 @@ A list of improvements and features for `crossy-road-client`
 -   [x] Add Vehicle collision handling
 -   [x] Add `Water` lane generation
 -   [x] Add `Water` lane interaction
+-   [ ] Add death by time
 
 ### Singleplayer
 
@@ -23,7 +24,6 @@ A list of improvements and features for `crossy-road-client`
 
 -   [x] Add 2nd player controls
 -   [x] Add winner detection
--   [ ] Add winning by distance
 
 ## User Interface
 
@@ -43,3 +43,5 @@ A list of improvements and features for `crossy-road-client`
 -   [x] Player can slide after jumping
 -   [x] `Grass` lane can create impossible levels
 -   [ ] Logs generate incorrectly upon lane spawn
+-   [x] Player can jump from a log into an obstacle
+-   [ ] Logs trigger boost incorrectly
