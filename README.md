@@ -42,6 +42,6 @@ A list of improvements and features for `crossy-road-client`
 
 -   [x] Player can slide after jumping
 -   [x] `Grass` lane can create impossible levels
--   [ ] Logs generate incorrectly upon lane spawn
+-   [x] Logs generate incorrectly upon lane spawn
 -   [x] Player can jump from a log into an obstacle
--   [ ] Logs trigger boost incorrectly
+-   [x] Logs trigger boost incorrectly

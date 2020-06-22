@@ -196,7 +196,7 @@ public class Player : MonoBehaviour
 			}
 		}
 
-		Debug.DrawRay(Vector3Int.RoundToInt(transform.position), model.transform.TransformDirection(Vector3.forward), Color.red);
+		Debug.DrawRay(transform.position, model.transform.TransformDirection(Vector3.forward), Color.red);
 	}
 
 	// Jump Animation Complete
@@ -228,7 +228,7 @@ public class Player : MonoBehaviour
 				else
 				{
 					// Round Position and Update Direction
-					transform.position = new Vector3((float)Math.Round(transform.position.x), 1, (float)Math.Round(transform.position.z));
+					transform.position = new Vector3((float)Math.Floor(transform.position.x) + 0.5f, 1, (float)Math.Round(transform.position.z));
 				}
 
 				model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
@@ -266,7 +266,7 @@ public class Player : MonoBehaviour
 		if (canMove) isSticking = false;
 
 		// Check for Rounding
-		jumpX = (float)Math.Round(transform.position.x) - transform.position.x;
+		jumpX = (float)Math.Floor(transform.position.x) + 0.5f - transform.position.x;
 		if (direction == 0 || direction == 2)
 		{
 			RaycastHit hit;
@@ -304,7 +304,7 @@ public class Player : MonoBehaviour
 		}
 
 		RaycastHit hit;
-		if (Physics.Raycast(Vector3Int.RoundToInt(transform.position), forward, out hit, 1))
+		if (Physics.Raycast(transform.position, forward, out hit, 1))
 		{
 			switch (hit.transform.tag)
 			{

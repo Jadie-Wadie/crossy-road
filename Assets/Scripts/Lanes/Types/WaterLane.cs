@@ -50,14 +50,8 @@ public class WaterLane : Lane
 		spawnPos = new Vector3(laneWidth * 1.5f * -Mathf.Clamp(speed, -1, 1), 0, transform.position.z);
 
 		// Generate Logs
-		float position = spawnPos.x + Random.Range(spawnRate.x, spawnRate.y) * speed;
-		while (Mathf.Abs(position) < laneWidth * 3)
-		{
-			GameObject log = SpawnLog(new Vector3(position, 0, transform.position.z));
-			logObjects.Add(log);
-
-			position += Random.Range(spawnRate.x, spawnRate.y) * speed;
-		}
+		logObjects.Add(SpawnLog(new Vector3(laneWidth / 2 + Random.Range(0f, 1f) * speed, 0, transform.position.z)));
+		logObjects.Add(SpawnLog(new Vector3(-laneWidth / 2 + Random.Range(0f, 1f) * speed, 0, transform.position.z)));
 
 		// Tag Main
 		main.tag = "Water";
@@ -75,6 +69,7 @@ public class WaterLane : Lane
 		// Configure
 		Translate script = log.GetComponent<Translate>();
 		script.speed = speed;
+		script.laneWidth = laneWidth;
 
 		return log;
 	}

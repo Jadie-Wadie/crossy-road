@@ -11,7 +11,6 @@ public class WorldGenerator : MonoBehaviour
 	[Space(10)]
 
 	public Vector2Int buffer = new Vector2Int(5, 15);
-	public Vector3 offset;
 
 	[Header("GameObjects")]
 	public Transform laneParent;
@@ -90,7 +89,7 @@ public class WorldGenerator : MonoBehaviour
 		if (counter < spawnLength) lanePrefab = spawn;
 
 		// Spawn the Lane
-		GameObject laneObject = Instantiate(lanePrefab, new Vector3(0, 0, counter) + offset, Quaternion.identity);
+		GameObject laneObject = Instantiate(lanePrefab, new Vector3(0, 0, counter), Quaternion.identity);
 		laneObject.transform.SetParent(laneParent);
 
 		// Set Lane Variant

@@ -327,17 +327,17 @@ public class GameController : MonoBehaviour
 		{
 			case GameMode.Singleplayer:
 				// Player
-				players[0] = SpawnPlayer(0, new Vector3(0, 1, 0), inputs[0]);
+				players[0] = SpawnPlayer(0, new Vector3(0.5f, 1, 0), inputs[0]);
 				cameras[0] = SpawnCamera(players[0], new Rect(0, 0, 1, 1), 35f);
 				break;
 
 			case GameMode.Multiplayer:
 				// Player 1
-				players[0] = SpawnPlayer(0, new Vector3(-1, 1, 0), inputs[0]);
+				players[0] = SpawnPlayer(0, new Vector3(-0.5f, 1, 0), inputs[0]);
 				cameras[0] = SpawnCamera(players[0], new Rect(0, 0, 0.5f, 1), 40f);
 
 				// Player 2
-				players[1] = SpawnPlayer(1, new Vector3(0, 1, 0), inputs[1]);
+				players[1] = SpawnPlayer(1, new Vector3(0.5f, 1, 0), inputs[1]);
 				cameras[1] = SpawnCamera(players[1], new Rect(0.5f, 0, 0.5f, 1), 40f);
 				break;
 		}
