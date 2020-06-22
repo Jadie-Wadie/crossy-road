@@ -144,7 +144,7 @@ public class Player : MonoBehaviour
 					// Strafe to Tile
 					if (direction == 0 || direction == 2)
 					{
-						transform.Translate(model.transform.right * (jumpX / jumpSpeed) * Time.deltaTime);
+						transform.Translate(Vector3.right * (jumpX / jumpSpeed) * Time.deltaTime);
 					}
 
 					// Check for Chaining
@@ -195,8 +195,6 @@ public class Player : MonoBehaviour
 
 			}
 		}
-
-		Debug.DrawRay(transform.position, model.transform.TransformDirection(Vector3.forward), Color.red);
 	}
 
 	// Jump Animation Complete
@@ -228,7 +226,7 @@ public class Player : MonoBehaviour
 				else
 				{
 					// Round Position and Update Direction
-					transform.position = new Vector3((float)Math.Floor(transform.position.x) + 0.5f, 1, (float)Math.Round(transform.position.z));
+					transform.position = new Vector3((float)Math.Round(transform.position.x - 0.5f) + 0.5f, 1, (float)Math.Round(transform.position.z));
 				}
 
 				model.transform.rotation = Quaternion.Euler(0, direction * 90, 0);
@@ -266,7 +264,7 @@ public class Player : MonoBehaviour
 		if (canMove) isSticking = false;
 
 		// Check for Rounding
-		jumpX = (float)Math.Floor(transform.position.x) + 0.5f - transform.position.x;
+		jumpX = (float)Math.Round(transform.position.x - 0.5f) + 0.5f - transform.position.x;
 		if (direction == 0 || direction == 2)
 		{
 			RaycastHit hit;

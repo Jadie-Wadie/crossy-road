@@ -13,7 +13,8 @@ public class Translate : MonoBehaviour
 
 	[Space(10)]
 
-	public bool boosting = true;
+	public bool boost = false;
+	public bool boosting = false;
 
 	[Header("Debug")]
 
@@ -30,9 +31,12 @@ public class Translate : MonoBehaviour
 		transform.Translate(new Vector3(speed * (boosting ? 2 : 1) * Time.deltaTime, 0, 0), Space.World);
 
 		// Check for Boost
-		boosting = Mathf.Min(
+		if (boost)
+		{
+			boosting = Mathf.Min(
 			Mathf.Abs(render.bounds.center.x - render.bounds.size.x / 2),
 			Mathf.Abs(render.bounds.center.x + render.bounds.size.x / 2)
 		) > laneWidth / 2;
+		}
 	}
 }

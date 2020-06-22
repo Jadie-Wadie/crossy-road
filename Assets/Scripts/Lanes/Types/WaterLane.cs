@@ -80,6 +80,8 @@ public class WaterLane : Lane
 		GameObject log = SpawnLog(spawnPos);
 		logObjects.Add(log);
 
+		log.GetComponent<Translate>().boost = true;
+
 		// Wait for SpawnRate
 		yield return new WaitForSeconds(Random.Range(spawnRate.x, spawnRate.y + 1));
 		StartCoroutine(SpawnCycle());

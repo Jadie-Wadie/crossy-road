@@ -1603,7 +1603,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnLength: 2
   buffer: {x: 5, y: 15}
-  offset: {x: -0.5, y: 0, z: 0}
   laneParent: {fileID: 1527590419}
   spawn: {fileID: 5112734177731990834, guid: 495317b3370b94b4783f268db155b6e6, type: 3}
   lanes:
