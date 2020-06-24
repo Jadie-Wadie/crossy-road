@@ -1631,7 +1631,7 @@ MonoBehaviour:
   gameMode: 0
   alivePlayers: 0
   highScore: 0
-  playerPrefab: {fileID: 2925789479202780732, guid: f61e350252aa03a43a3defa9803153c6,
+  playerPrefab: {fileID: 8053837906293011770, guid: 176f7f1097dc8b54aac4d74decfc20d4,
     type: 3}
   playerParent: {fileID: 1583189411}
   players: []
