@@ -353,7 +353,7 @@ public class GameController : MonoBehaviour
 
 		Player script = player.GetComponent<Player>();
 		script.keybinds = keybinds;
-		script.id = id;
+		script.playerID = id;
 
 		script.playing = false;
 
