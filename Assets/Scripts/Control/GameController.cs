@@ -231,7 +231,7 @@ public class GameController : MonoBehaviour
 			// Enable Movement
 			foreach (GameObject player in players)
 			{
-				player.GetComponent<NewPlayer>().playing = true;
+				player.GetComponent<Player>().playing = true;
 			}
 
 			// Setup UI
@@ -256,7 +256,7 @@ public class GameController : MonoBehaviour
 			// Enable Movement
 			foreach (GameObject player in players)
 			{
-				player.GetComponent<NewPlayer>().playing = true;
+				player.GetComponent<Player>().playing = true;
 			}
 
 			// UI
@@ -351,7 +351,7 @@ public class GameController : MonoBehaviour
 		GameObject player = Instantiate(playerPrefab, position, Quaternion.identity);
 		player.transform.SetParent(playerParent);
 
-		NewPlayer script = player.GetComponent<NewPlayer>();
+		Player script = player.GetComponent<Player>();
 		script.keybinds = keybinds;
 		script.id = id;
 
