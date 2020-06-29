@@ -154,6 +154,11 @@ public class GameController : MonoBehaviour
 						script.isEagled = true;
 						script.repeatJump = false;
 					}
+
+					if (script.state != Player.PlayerState.Jump)
+					{
+						script.playing = false;
+					}
 				}
 			}
 		}
@@ -417,11 +422,6 @@ public class GameController : MonoBehaviour
 	// Player Died
 	public IEnumerator PlayerDied(int player)
 	{
-		// Freeze the Player
-		Player script = players[player].GetComponent<Player>();
-		script.state = Player.PlayerState.Dead;
-		script.playing = false;
-
 		// Update UI
 		if (player == 0)
 		{

@@ -179,19 +179,26 @@ public class Player : MonoBehaviour
 
 				if (script != null && script.boosting)
 				{
+					state = PlayerState.Dead;
+					playing = false;
+
 					StartCoroutine(gameController.PlayerDied(playerID));
 				}
 			}
 		}
 		else
 		{
-			// Stick to the Object
-			if (isSticking && stickObject != null)
+			// Dead
+			if (state == PlayerState.Dead)
 			{
-				transform.position = stickObject.transform.position + stickPos;
-				transform.rotation = Quaternion.Euler(0, direction * 90, 0);
+				// Stick to the Object
+				if (isSticking && stickObject != null)
+				{
+					transform.position = stickObject.transform.position + stickPos;
+					transform.rotation = Quaternion.Euler(0, direction * 90, 0);
 
-				model.transform.localRotation = Quaternion.Euler(0, 0, 0);
+					model.transform.localRotation = Quaternion.Euler(0, 0, 0);
+				}
 			}
 		}
 	}
@@ -199,18 +206,14 @@ public class Player : MonoBehaviour
 	// Jump Animation Complete
 	public void JumpOver()
 	{
-		// Check for Eagle
-		if (isEagled)
-		{
-			playing = false;
-			repeatJump = false;
-		}
-
 		// Check for Water
 		RaycastHit hit;
 		if (!Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f))
 		{
 			animator.SetTrigger("shouldSplash");
+
+			state = PlayerState.Dead;
+			playing = false;
 
 			StartCoroutine(gameController.PlayerDied(playerID));
 		}
@@ -366,6 +369,9 @@ public class Player : MonoBehaviour
 					animator.SetTrigger("shouldFlat");
 				}
 
+				state = PlayerState.Dead;
+				playing = false;
+
 				StartCoroutine(gameController.PlayerDied(playerID));
 			}
 		}
@@ -376,6 +382,9 @@ public class Player : MonoBehaviour
 			isSticking = true;
 			stickPos = transform.position - other.gameObject.transform.position;
 			stickObject = other.gameObject;
+
+			state = PlayerState.Dead;
+			playing = false;
 
 			StartCoroutine(gameController.PlayerDied(playerID));
 		}
