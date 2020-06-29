@@ -63,7 +63,7 @@ MonoBehaviour:
     ends: {fileID: 2100000, guid: 296f5c5721c0fc341b5536c61fbc9304, type: 2}
   - main: {fileID: 2100000, guid: a7d6f3bda6356a94f8a00791ea756745, type: 2}
     ends: {fileID: 2100000, guid: 54c0071a70af20641a4c8ad988d5f919, type: 2}
-  obstacleCount: 2
+  obstacleCount: 0
   obstacleDensity: 90
   obstacles:
   - weight: 10

@@ -27,7 +27,7 @@ public class WorldGenerator : MonoBehaviour
 
 	[Space(10)]
 
-	private int counter = 0;
+	public int counter = 0;
 
 	[Space(10)]
 

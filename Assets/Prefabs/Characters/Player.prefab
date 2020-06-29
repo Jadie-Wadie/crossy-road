@@ -120,6 +120,7 @@ MonoBehaviour:
   isSticking: 0
   stickObject: {fileID: 0}
   stickPos: {x: 0, y: 0, z: 0}
+  isEagled: 0
   keybinds:
     W: 0
     A: 0

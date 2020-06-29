@@ -14,7 +14,7 @@ A list of improvements and features for `crossy-road-client`
 -   [x] Add Vehicle collision handling
 -   [x] Add `Water` lane generation
 -   [x] Add `Water` lane interaction
--   [ ] Add death by time
+-   [x] Add death by eagle
 
 ### Singleplayer
 

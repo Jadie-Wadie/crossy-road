@@ -62,6 +62,7 @@ public class GameController : MonoBehaviour
 	public Button playButton;
 	public Button modeButton;
 
+	private bool playEnabled = true;
 	private bool modeEnabled = true;
 
 	[Space(10)]
@@ -92,6 +93,10 @@ public class GameController : MonoBehaviour
 		public Text gameOver;
 		public Image crown;
 	}
+
+	[Header("Eagle")]
+	public GameObject eaglePrefab;
+	public GameObject eagleParent;
 
 	[Header("Input")]
 	public Keybinds[] inputs;
@@ -132,6 +137,25 @@ public class GameController : MonoBehaviour
 					player2.distance.text = Mathf.Max(Mathf.RoundToInt(players[1].transform.position.z), 0).ToString();
 					break;
 			}
+
+			// Check Eagle Deaths
+			for (int i = 0; i < players.Length; i++)
+			{
+				if (players[i].transform.position.z < worldGenerator.counter - worldGenerator.buffer.y - 3)
+				{
+					Player script = players[i].GetComponent<Player>();
+					if (!script.isEagled)
+					{
+						GameObject eagle = Instantiate(eaglePrefab, new Vector3(players[i].transform.position.x, 2.2f, players[i].transform.position.z + worldGenerator.buffer.y), Quaternion.identity);
+						eagle.transform.SetParent(eagleParent.transform);
+
+						eagle.GetComponent<Eagle>().target = players[i];
+
+						script.isEagled = true;
+						script.repeatJump = false;
+					}
+				}
+			}
 		}
 
 		// Show FPS
@@ -157,6 +181,12 @@ public class GameController : MonoBehaviour
 	{
 		// Spawn Players
 		SpawnPlayers();
+
+		// Remove Eagles
+		foreach (Transform child in eagleParent.transform)
+		{
+			if (child != playerParent) Destroy(child.gameObject);
+		}
 
 		// Regenerate World
 		worldGenerator.Generate();
@@ -223,6 +253,10 @@ public class GameController : MonoBehaviour
 	// Start Game
 	IEnumerator StartGame()
 	{
+		// Disable Button
+		if (!playEnabled) yield break;
+		playEnabled = false;
+
 		if (gameState == GameState.Menu)
 		{
 			// Start Playing
@@ -262,6 +296,9 @@ public class GameController : MonoBehaviour
 			// UI
 			animator.SetBool("isVisible", false);
 		}
+
+		// Enable Button
+		playEnabled = true;
 	}
 
 	// Game Mode Button
@@ -380,6 +417,12 @@ public class GameController : MonoBehaviour
 	// Player Died
 	public IEnumerator PlayerDied(int player)
 	{
+		// Freeze the Player
+		Player script = players[player].GetComponent<Player>();
+		script.state = Player.PlayerState.Dead;
+		script.playing = false;
+
+		// Update UI
 		if (player == 0)
 		{
 			player1.gameOver.text = player1.distance.text;
@@ -392,8 +435,10 @@ public class GameController : MonoBehaviour
 			player2.gameOver.enabled = true;
 		}
 
+		// Check GameOver
 		if (--alivePlayers == 0) GameOver();
 
+		// Shake the Camera
 		cameras[player].GetComponent<CameraController>().shake = true;
 
 		yield return new WaitForSeconds(0.25f);

@@ -49,6 +49,10 @@ public class Player : MonoBehaviour
 	public GameObject stickObject;
 	public Vector3 stickPos;
 
+	[Space(10)]
+
+	public bool isEagled = false;
+
 	[Header("Input")]
 	public Keybinds keybinds;
 
@@ -110,7 +114,7 @@ public class Player : MonoBehaviour
 						{
 							CheckMovement();
 
-							if (canMove)
+							if (canMove && !isEagled)
 							{
 								state = PlayerState.Jump;
 								animator.SetTrigger("shouldJump");
@@ -150,8 +154,11 @@ public class Player : MonoBehaviour
 					// Check for Chaining
 					if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D))
 					{
-						repeatJump = true;
-						animator.SetTrigger("shouldJump");
+						if (!isEagled)
+						{
+							repeatJump = true;
+							animator.SetTrigger("shouldJump");
+						}
 					}
 
 					// Check for Crouch
@@ -172,27 +179,19 @@ public class Player : MonoBehaviour
 
 				if (script != null && script.boosting)
 				{
-					state = PlayerState.Dead;
-					playing = false;
-
 					StartCoroutine(gameController.PlayerDied(playerID));
 				}
 			}
 		}
 		else
 		{
-			// Dead
-			if (state == PlayerState.Dead)
+			// Stick to the Object
+			if (isSticking && stickObject != null)
 			{
-				// Stick to the Vehicle
-				if (isSticking)
-				{
-					transform.rotation = Quaternion.Euler(0, direction * 90, 0);
-					model.transform.localRotation = Quaternion.Euler(0, 0, 0);
+				transform.position = stickObject.transform.position + stickPos;
+				transform.rotation = Quaternion.Euler(0, direction * 90, 0);
 
-					if (stickObject != null) transform.position = stickObject.transform.position + stickPos;
-				}
-
+				model.transform.localRotation = Quaternion.Euler(0, 0, 0);
 			}
 		}
 	}
@@ -200,14 +199,18 @@ public class Player : MonoBehaviour
 	// Jump Animation Complete
 	public void JumpOver()
 	{
+		// Check for Eagle
+		if (isEagled)
+		{
+			playing = false;
+			repeatJump = false;
+		}
+
 		// Check for Water
 		RaycastHit hit;
 		if (!Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f))
 		{
 			animator.SetTrigger("shouldSplash");
-
-			state = PlayerState.Dead;
-			playing = false;
 
 			StartCoroutine(gameController.PlayerDied(playerID));
 		}
@@ -363,11 +366,18 @@ public class Player : MonoBehaviour
 					animator.SetTrigger("shouldFlat");
 				}
 
-				state = PlayerState.Dead;
-				playing = false;
-
 				StartCoroutine(gameController.PlayerDied(playerID));
 			}
+		}
+
+		if (other.gameObject.CompareTag("Eagle"))
+		{
+
+			isSticking = true;
+			stickPos = transform.position - other.gameObject.transform.position;
+			stickObject = other.gameObject;
+
+			StartCoroutine(gameController.PlayerDied(playerID));
 		}
 	}
 }

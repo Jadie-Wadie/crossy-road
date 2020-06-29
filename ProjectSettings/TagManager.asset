@@ -9,6 +9,7 @@ TagManager:
   - Vehicle
   - Log
   - Water
+  - Eagle
   layers:
   - Default
   - TransparentFX
