@@ -373,7 +373,7 @@ public class Player : MonoBehaviour
 			}
 		}
 
-		if (other.gameObject.CompareTag("Eagle"))
+		if (other.gameObject.CompareTag("Eagle") && isEagled)
 		{
 			isSticking = true;
 			stickPos = transform.position - other.gameObject.transform.position;

@@ -141,7 +141,7 @@ public class GameController : MonoBehaviour
 			// Check Eagle Deaths
 			for (int i = 0; i < players.Length; i++)
 			{
-				if (players[i].transform.position.z < worldGenerator.counter - worldGenerator.buffer.y - 3)
+				if (players[i].transform.position.z < worldGenerator.counter - worldGenerator.buffer.y - (gameMode == GameMode.Singleplayer ? 3 : 8))
 				{
 					Player script = players[i].GetComponent<Player>();
 					if (!script.isEagled)

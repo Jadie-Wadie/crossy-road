@@ -47,3 +47,4 @@ A list of improvements and features for `crossy-road-client`
 -   [x] Logs trigger boost incorrectly
 -   [x] Jumping from a log into a car causes the player to play both car and water death animations
 -   [x] The player can clip inside a car's door handle
+-   [x] The eagle can pick up both players
