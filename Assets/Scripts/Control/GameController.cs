@@ -151,13 +151,7 @@ public class GameController : MonoBehaviour
 
 						eagle.GetComponent<Eagle>().target = players[i];
 
-						script.isEagled = true;
-						script.repeatJump = false;
-					}
-
-					if (script.state != Player.PlayerState.Jump)
-					{
-						script.playing = false;
+						script.isEagled = transform;
 					}
 				}
 			}
@@ -438,11 +432,11 @@ public class GameController : MonoBehaviour
 		// Check GameOver
 		if (--alivePlayers == 0) GameOver();
 
-		// Shake the Camera
+		// Update the Camera
+		cameras[player].GetComponent<CameraController>().target = null;
+
 		cameras[player].GetComponent<CameraController>().shake = true;
-
 		yield return new WaitForSeconds(0.25f);
-
 		cameras[player].GetComponent<CameraController>().shake = false;
 	}
 

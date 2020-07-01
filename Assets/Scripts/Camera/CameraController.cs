@@ -37,8 +37,11 @@ public class CameraController : MonoBehaviour
 	void FixedUpdate()
 	{
 		// Lerp
-		Vector3 location = new Vector3(Mathf.Clamp(target.transform.position.x * 0.5f, -1, 1), 1, target.transform.position.z);
-		transform.position = Vector3.SmoothDamp(transform.position, location + offset, ref velocity, damp);
+		if (target != null)
+		{
+			Vector3 location = new Vector3(Mathf.Clamp(target.transform.position.x * 0.5f, -1, 1), 1, target.transform.position.z);
+			transform.position = Vector3.SmoothDamp(transform.position, location + offset, ref velocity, damp);
+		}
 
 		// Shake
 		if (shake)

@@ -114,7 +114,7 @@ public class Player : MonoBehaviour
 						{
 							CheckMovement();
 
-							if (canMove && !isEagled)
+							if (canMove)
 							{
 								state = PlayerState.Jump;
 								animator.SetTrigger("shouldJump");
@@ -154,11 +154,8 @@ public class Player : MonoBehaviour
 					// Check for Chaining
 					if (Input.GetKeyUp(keybinds.W) || Input.GetKeyUp(keybinds.A) || Input.GetKeyUp(keybinds.S) || Input.GetKeyUp(keybinds.D))
 					{
-						if (!isEagled)
-						{
-							repeatJump = true;
-							animator.SetTrigger("shouldJump");
-						}
+						repeatJump = true;
+						animator.SetTrigger("shouldJump");
 					}
 
 					// Check for Crouch
@@ -192,12 +189,12 @@ public class Player : MonoBehaviour
 			if (state == PlayerState.Dead)
 			{
 				// Stick to the Object
-				if (isSticking && stickObject != null)
+				if (isSticking)
 				{
-					transform.position = stickObject.transform.position + stickPos;
 					transform.rotation = Quaternion.Euler(0, direction * 90, 0);
-
 					model.transform.localRotation = Quaternion.Euler(0, 0, 0);
+
+					if (stickObject != null) transform.position = stickObject.transform.position + stickPos;
 				}
 			}
 		}
@@ -206,20 +203,20 @@ public class Player : MonoBehaviour
 	// Jump Animation Complete
 	public void JumpOver()
 	{
-		// Check for Water
-		RaycastHit hit;
-		if (!Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f))
+		if (state != PlayerState.Dead)
 		{
-			animator.SetTrigger("shouldSplash");
+			// Check for Water
+			RaycastHit hit;
+			if (!Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f))
+			{
+				animator.SetTrigger("shouldSplash");
 
-			state = PlayerState.Dead;
-			playing = false;
+				state = PlayerState.Dead;
+				playing = false;
 
-			StartCoroutine(gameController.PlayerDied(playerID));
-		}
-		else
-		{
-			if (state != PlayerState.Dead)
+				StartCoroutine(gameController.PlayerDied(playerID));
+			}
+			else
 			{
 				// Check for Log
 				if (hit.collider.gameObject.CompareTag("Log"))
@@ -378,7 +375,6 @@ public class Player : MonoBehaviour
 
 		if (other.gameObject.CompareTag("Eagle"))
 		{
-
 			isSticking = true;
 			stickPos = transform.position - other.gameObject.transform.position;
 			stickObject = other.gameObject;

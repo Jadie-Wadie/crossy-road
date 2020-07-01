@@ -59,8 +59,7 @@ MonoBehaviour:
   variants:
   - main: {fileID: 2100000, guid: 5dd61b6dce964f74f9a61d7f785d395f, type: 2}
     ends: {fileID: 2100000, guid: 09d49d8f02f56824c82608f7af510690, type: 2}
-  speedRange: {x: 2.75, y: 3.25}
-  preCount: {x: 2, y: 3}
+  speedRange: {x: 2.5, y: 3}
   linePrefab: {fileID: 3368556814982643145, guid: b84493a9645de724593e1cbd3dd9a10a,
     type: 3}
   spawnRate: {x: 2, y: 3}
@@ -77,6 +76,5 @@ MonoBehaviour:
   - weight: 2
     prefab: {fileID: 6054324421337273275, guid: 81bb1ff8b98b0624783d0f9f7fe7c78d,
       type: 3}
-  direction: 0
   speed: 0
   isSpawning: 1
