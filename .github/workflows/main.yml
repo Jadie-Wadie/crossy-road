@@ -24,9 +24,7 @@ jobs:
       - name: Build
         uses: webbertakken/unity-builder@master
         env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           unityVersion: 2019.2.17f1
           targetPlatform: WebGL
