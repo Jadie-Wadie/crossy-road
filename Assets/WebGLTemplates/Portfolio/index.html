@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>%UNITY_WEB_NAME%</title>
+		<script src="%UNITY_WEBGL_LOADER_URL%"></script>
+		<script>
+			var unityInstance = UnityLoader.instantiate(
+				'game-container',
+				'%UNITY_WEBGL_BUILD_URL%',
+				{
+					compatibilityCheck: function (
+						unityInstance,
+						onsuccess,
+						onerror
+					) {
+						const support = true;
+
+						if (!UnityLoader.SystemInfo.hasWebGL) {
+							support = null;
+							unityInstance.popup(
+								'Your browser does not support WebGL',
+								[{ text: 'OK', callback: onerror }]
+							);
+						} else if (UnityLoader.SystemInfo.mobile) {
+							support = false;
+							unityInstance.popup(
+								'Please note that Unity WebGL is not currently supported on mobiles. Press OK if you wish to continue anyway.',
+								[{ text: 'OK', callback: onsuccess }]
+							);
+						} else if (
+							['Edge', 'Firefox', 'Chrome', 'Safari'].indexOf(
+								UnityLoader.SystemInfo.browser
+							) == -1
+						) {
+							support = false;
+							unityInstance.popup(
+								'Please note that your browser is not currently supported for this Unity WebGL content. Press OK if you wish to continue anyway.',
+								[{ text: 'OK', callback: onsuccess }]
+							);
+						} else {
+							onsuccess();
+						}
+
+						switch (support) {
+							case null:
+								// Can't run at all
+								break;
+
+							case false:
+								// Can run, not supported
+								break;
+
+							case true:
+								// Can run, supported
+								break;
+						}
+					}
+				}
+			);
+		</script>
+		<style>
+			#game-container,
+			body {
+				width: 100%;
+				height: 100%;
+				margin: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="game-container"></div>
+	</body>
+</html>
