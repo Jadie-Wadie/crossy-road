@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: build
-          path: build
+          path: build/WebGL/WebGL
 
   deploy:
     name: Deploy
