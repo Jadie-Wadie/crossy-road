@@ -1,8 +1,13 @@
-# TODO
+# crossy-road
 
-A list of improvements and features for `crossy-road-client`
+![Build Status](https://img.shields.io/github/workflow/status/Jadie-Wadie/crossy-road/Firebase%20Deploy)
+![License](https://img.shields.io/github/license/Jadie-Wadie/crossy-road)
 
-## Gameplay
+## TODO
+
+A list of improvements and features for `crossy-road`
+
+### Gameplay
 
 -   [x] Add camera generation
 -   [x] Make camera follow player
@@ -16,29 +21,29 @@ A list of improvements and features for `crossy-road-client`
 -   [x] Add `Water` lane interaction
 -   [x] Add death by eagle
 
-### Singleplayer
+#### Singleplayer
 
 -   [x] Add highscore
 
-### Multiplayer
+#### Multiplayer
 
 -   [x] Add 2nd player controls
 -   [x] Add winner detection
 
-## User Interface
+### User Interface
 
 -   [x] Make a singleplayer / multiplayer selector
 -   [x] Add a play button
 -   [x] Add a gameover screen
 -   [x] Add camera shake on death
 
-## Other
+### Other
 
 -   [x] Add a singleplayer / multiplayer selector to the GameScript, instead of `playerCount`
 -   [x] Refactor script naming and Lane handling
 -   [x] Add `Walkable` and `Not Walkable` tags for detecting collision
 
-## Bugs
+### Bugs
 
 -   [x] Player can slide after jumping
 -   [x] `Grass` lane can create impossible levels
