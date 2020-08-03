@@ -16,7 +16,7 @@ jobs:
           lfs: true
 
       - name: Cache Library
-      - uses: actions/cache@main
+        uses: actions/cache@main
         with:
           path: Library
           key: Library
