@@ -3,49 +3,17 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link
+			rel="shortcut icon"
+			type="image/x-icon"
+			href="https://cdn.roundsquare.site/roundsquare/favicon.ico"
+		/>
 		<title>%UNITY_WEB_NAME%</title>
-		<script src="%UNITY_WEBGL_LOADER_URL%"></script>
-		<script>
-			var unityInstance = UnityLoader.instantiate(
-				'game-container',
-				'%UNITY_WEBGL_BUILD_URL%',
-				{
-					compatibilityCheck: function (
-						unityInstance,
-						onsuccess,
-						onerror
-					) {
-						const support = true;
-						const browser = [
-							'Edge',
-							'Firefox',
-							'Chrome',
-							'Safari'
-						].indexOf(UnityLoader.SystemInfo.browser);
-
-						if (!UnityLoader.SystemInfo.hasWebGL) support = null;
-						else if (
-							UnityLoader.SystemInfo.mobile ||
-							browser === -1
-						)
-							support = false;
-
-						switch (support) {
-							case null:
-							case false:
-								onerror();
-
-							case true:
-								onsuccess();
-								break;
-						}
-					}
-				}
-			);
-		</script>
 		<style>
-			#game-container,
-			body {
+			html,
+			body,
+			#game {
 				width: 100%;
 				height: 100%;
 				margin: auto;
@@ -53,6 +21,43 @@
 		</style>
 	</head>
 	<body>
-		<div id="game-container"></div>
+		<div id="game"></div>
 	</body>
+
+	<script src="%UNITY_WEBGL_LOADER_URL%"></script>
+	<script>
+		var unityInstance = UnityLoader.instantiate(
+			'game',
+			'%UNITY_WEBGL_BUILD_URL%',
+			{
+				compatibilityCheck: function (
+					unityInstance,
+					onsuccess,
+					onerror
+				) {
+					const browser = [
+						'Edge',
+						'Firefox',
+						'Chrome',
+						'Safari'
+					].indexOf(UnityLoader.SystemInfo.browser);
+
+					let support = true;
+					if (!UnityLoader.SystemInfo.hasWebGL) support = null;
+					else if (UnityLoader.SystemInfo.mobile || browser === -1)
+						support = false;
+
+					switch (support) {
+						case null:
+						case false:
+							onerror();
+
+						case true:
+							onsuccess();
+							break;
+					}
+				}
+			}
+		);
+	</script>
 </html>
