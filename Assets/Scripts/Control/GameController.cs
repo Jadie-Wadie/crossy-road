@@ -144,7 +144,7 @@ public class GameController : MonoBehaviour
 				if (players[i].transform.position.z < worldGenerator.counter - worldGenerator.buffer.y - (gameMode == GameMode.Singleplayer ? 3 : 8))
 				{
 					Player script = players[i].GetComponent<Player>();
-					if (!script.isEagled)
+					if (!script.isEagled && script.playing)
 					{
 						GameObject eagle = Instantiate(eaglePrefab, new Vector3(players[i].transform.position.x, 2.2f, players[i].transform.position.z + worldGenerator.buffer.y), Quaternion.identity);
 						eagle.transform.SetParent(eagleParent.transform);
